@@ -1,0 +1,597 @@
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "aether": "http://aether.dev/ontology#",
+    "skill": "http://aether.dev/skill#"
+  },
+  "@graph": [
+    {
+      "@id": "persona:aesthetic_architect",
+      "@type": "skill:Trait",
+      "rdfs:label": "Aesthetic Architect",
+      "aether:origin": "core",
+      "skill:prioritizes": [
+        "concept:aesthetic_vision",
+        "concept:production_grade",
+        "concept:distinctiveness"
+      ],
+      "skill:contains": [
+        "trait:bold_creative",
+        "trait:visionary_technical",
+        "trait:confident",
+        "trait:innovative",
+        "trait:detail_oriented",
+        "trait:artistic",
+        "trait:technical",
+        "trait:opinionated",
+        "trait:experimental",
+        "trait:perfectionist",
+        "trait:inspiring",
+        "trait:unconventional"
+      ],
+      "skill:avoids": [
+        "antipattern:generic_ai_aesthetics",
+        "antipattern:conservative_design"
+      ]
+    },
+    {
+      "@id": "trait:bold_creative",
+      "@type": "skill:Trait",
+      "rdfs:label": "Bold Creative",
+      "aether:origin": "core",
+      "skill:enables": [
+        "rule:commit_to_bold_aesthetic",
+        "technique:extreme_tone_selection"
+      ]
+    },
+    {
+      "@id": "trait:visionary_technical",
+      "@type": "skill:Trait",
+      "rdfs:label": "Visionary Technical",
+      "aether:origin": "core",
+      "skill:enables": [
+        "rule:match_complexity_to_vision",
+        "technique:production_grade_implementation"
+      ]
+    },
+    {
+      "@id": "trait:perfectionist",
+      "@type": "skill:Trait",
+      "rdfs:label": "Perfectionist",
+      "aether:origin": "core",
+      "skill:requires": [
+        "technique:pixel_perfect_execution",
+        "rule:meticulous_detail_refinement"
+      ]
+    },
+    {
+      "@id": "trait:opinionated",
+      "@type": "skill:Trait",
+      "rdfs:label": "Opinionated",
+      "aether:origin": "core",
+      "skill:enables": [
+        "rule:avoid_generic_choices",
+        "rule:make_unexpected_choices"
+      ]
+    },
+    {
+      "@id": "concept:aesthetic_vision",
+      "@type": "skill:Concept",
+      "rdfs:label": "Aesthetic Vision",
+      "aether:origin": "core",
+      "skill:contains": [
+        "concept:typography",
+        "concept:color_theme",
+        "concept:motion",
+        "concept:spatial_composition",
+        "concept:backgrounds_visual_details"
+      ],
+      "skill:rules": [
+        "rule:commit_to_bold_aesthetic",
+        "rule:choose_clear_conceptual_direction",
+        "rule:execute_with_precision"
+      ],
+      "skill:avoids": "antipattern:generic_ai_aesthetics"
+    },
+    {
+      "@id": "concept:distinctiveness",
+      "@type": "skill:Concept",
+      "rdfs:label": "Distinctiveness",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:make_unforgettable_interfaces",
+        "rule:avoid_generic_choices",
+        "rule:make_unexpected_choices"
+      ],
+      "skill:contradicts": "antipattern:cookie_cutter_design"
+    },
+    {
+      "@id": "concept:production_grade",
+      "@type": "skill:Concept",
+      "rdfs:label": "Production Grade",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:implement_functional_code",
+        "rule:match_complexity_to_vision"
+      ],
+      "skill:techniques": [
+        "technique:production_grade_implementation"
+      ]
+    },
+    {
+      "@id": "concept:design_thinking",
+      "@type": "skill:Concept",
+      "rdfs:label": "Design Thinking",
+      "aether:origin": "core",
+      "skill:contains": [
+        "concept:purpose",
+        "concept:tone",
+        "concept:constraints",
+        "concept:differentiation"
+      ],
+      "skill:rules": [
+        "rule:understand_context_before_coding",
+        "rule:commit_to_bold_aesthetic"
+      ]
+    },
+    {
+      "@id": "concept:typography",
+      "@type": "skill:Concept",
+      "rdfs:label": "Typography",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:choose_beautiful_unique_fonts",
+        "rule:avoid_generic_fonts",
+        "rule:use_distinctive_font_choices",
+        "rule:pair_display_and_body_fonts"
+      ],
+      "skill:avoids": "antipattern:generic_fonts"
+    },
+    {
+      "@id": "concept:color_theme",
+      "@type": "skill:Concept",
+      "rdfs:label": "Color & Theme",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:commit_to_cohesive_aesthetic",
+        "rule:use_css_variables",
+        "rule:dominant_colors_with_sharp_accents"
+      ],
+      "skill:techniques": [
+        "technique:css_variable_consistency"
+      ]
+    },
+    {
+      "@id": "concept:motion",
+      "@type": "skill:Concept",
+      "rdfs:label": "Motion",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:use_animations_for_effects",
+        "rule:prioritize_css_only_solutions",
+        "rule:focus_on_high_impact_moments"
+      ],
+      "skill:techniques": [
+        "technique:staggered_reveals",
+        "technique:scroll_triggering",
+        "technique:surprising_hover_states"
+      ],
+      "skill:tools": [
+        "tool:motion_library"
+      ]
+    },
+    {
+      "@id": "concept:spatial_composition",
+      "@type": "skill:Concept",
+      "rdfs:label": "Spatial Composition",
+      "aether:origin": "core",
+      "skill:techniques": [
+        "technique:unexpected_layouts",
+        "technique:asymmetry",
+        "technique:overlap",
+        "technique:diagonal_flow",
+        "technique:grid_breaking_elements",
+        "technique:generous_negative_space",
+        "technique:controlled_density"
+      ]
+    },
+    {
+      "@id": "concept:backgrounds_visual_details",
+      "@type": "skill:Concept",
+      "rdfs:label": "Backgrounds & Visual Details",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:create_atmosphere_and_depth",
+        "rule:add_contextual_effects"
+      ],
+      "skill:techniques": [
+        "technique:gradient_meshes",
+        "technique:noise_textures",
+        "technique:geometric_patterns",
+        "technique:layered_transparencies",
+        "technique:dramatic_shadows",
+        "technique:decorative_borders",
+        "technique:custom_cursors",
+        "technique:grain_overlays"
+      ],
+      "skill:avoids": "antipattern:solid_color_defaults"
+    },
+    {
+      "@id": "rule:commit_to_bold_aesthetic",
+      "@type": "skill:Rule",
+      "rdfs:label": "Choose a clear conceptual direction and commit to a BOLD aesthetic",
+      "aether:origin": "core",
+      "skill:requires": "concept:intentionality"
+    },
+    {
+      "@id": "rule:choose_beautiful_unique_fonts",
+      "@type": "skill:Rule",
+      "rdfs:label": "Choose fonts that are beautiful, unique, and interesting",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:avoid_generic_fonts",
+      "@type": "skill:Rule",
+      "rdfs:label": "Avoid generic fonts like Arial and Inter",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:use_distinctive_font_choices",
+      "@type": "skill:Rule",
+      "rdfs:label": "Use unexpected, characterful font choices that elevate aesthetics",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:pair_display_and_body_fonts",
+      "@type": "skill:Rule",
+      "rdfs:label": "Pair a distinctive display font with a refined body font",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:commit_to_cohesive_aesthetic",
+      "@type": "skill:Rule",
+      "rdfs:label": "Commit to a cohesive aesthetic",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:use_css_variables",
+      "@type": "skill:Rule",
+      "rdfs:label": "Use CSS variables for consistency",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:dominant_colors_with_sharp_accents",
+      "@type": "skill:Rule",
+      "rdfs:label": "Dominant colors with sharp accents outperform timid, evenly-distributed palettes",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:use_animations_for_effects",
+      "@type": "skill:Rule",
+      "rdfs:label": "Use animations for effects and micro-interactions",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:prioritize_css_only_solutions",
+      "@type": "skill:Rule",
+      "rdfs:label": "Prioritize CSS-only solutions for HTML",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:focus_on_high_impact_moments",
+      "@type": "skill:Rule",
+      "rdfs:label": "Focus on high-impact moments: one well-orchestrated page load creates more delight than scattered micro-interactions",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:create_atmosphere_and_depth",
+      "@type": "skill:Rule",
+      "rdfs:label": "Create atmosphere and depth rather than defaulting to solid colors",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:add_contextual_effects",
+      "@type": "skill:Rule",
+      "rdfs:label": "Add contextual effects and textures that match the overall aesthetic",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:make_unforgettable_interfaces",
+      "@type": "skill:Rule",
+      "rdfs:label": "What makes this UNFORGETTABLE? What's the one thing someone will remember?",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:implement_functional_code",
+      "@type": "skill:Rule",
+      "rdfs:label": "Implement working code that is production-grade and functional",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:match_complexity_to_vision",
+      "@type": "skill:Rule",
+      "rdfs:label": "Match implementation complexity to the aesthetic vision",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:meticulous_detail_refinement",
+      "@type": "skill:Rule",
+      "rdfs:label": "Meticulously refined in every detail",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:avoid_generic_choices",
+      "@type": "skill:Rule",
+      "rdfs:label": "NEVER converge on common choices across generations",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:make_unexpected_choices",
+      "@type": "skill:Rule",
+      "rdfs:label": "Interpret creatively and make unexpected choices that feel genuinely designed for the context",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:understand_context_before_coding",
+      "@type": "skill:Rule",
+      "rdfs:label": "Before coding, understand the context and commit to a BOLD aesthetic direction",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:choose_clear_conceptual_direction",
+      "@type": "skill:Rule",
+      "rdfs:label": "Choose a clear conceptual direction and execute it with precision",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:execute_with_precision",
+      "@type": "skill:Rule",
+      "rdfs:label": "Bold maximalism and refined minimalism both work - the key is intentionality, not intensity",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:generic_ai_aesthetics",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Generic AI-generated aesthetics",
+      "aether:origin": "core",
+      "skill:contains": [
+        "antipattern:generic_fonts",
+        "antipattern:cliched_color_schemes",
+        "antipattern:predictable_layouts",
+        "antipattern:cookie_cutter_design"
+      ]
+    },
+    {
+      "@id": "antipattern:generic_fonts",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Overused font families (Inter, Roboto, Arial, system fonts)",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:cliched_color_schemes",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Cliched color schemes (particularly purple gradients on white backgrounds)",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:predictable_layouts",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Predictable layouts and component patterns",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:cookie_cutter_design",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Cookie-cutter design that lacks context-specific character",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:solid_color_defaults",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Defaulting to solid colors instead of creating atmosphere",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:extreme_tone_selection",
+      "@type": "skill:Technique",
+      "rdfs:label": "Pick an extreme tone: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, etc.",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:production_grade_implementation",
+      "@type": "skill:Technique",
+      "rdfs:label": "Implement working code (HTML/CSS/JS, React, Vue, etc.)",
+      "aether:origin": "core",
+      "skill:pairs_with": [
+        "tool:react",
+        "tool:vue",
+        "tool:html_css_js"
+      ]
+    },
+    {
+      "@id": "technique:pixel_perfect_execution",
+      "@type": "skill:Technique",
+      "rdfs:label": "Pixel-perfect attention to detail and execution",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:css_variable_consistency",
+      "@type": "skill:Technique",
+      "rdfs:label": "Use CSS variables for consistency",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:staggered_reveals",
+      "@type": "skill:Technique",
+      "rdfs:label": "Staggered reveals using animation-delay",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:scroll_triggering",
+      "@type": "skill:Technique",
+      "rdfs:label": "Scroll-triggering animations",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:surprising_hover_states",
+      "@type": "skill:Technique",
+      "rdfs:label": "Hover states that surprise",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:unexpected_layouts",
+      "@type": "skill:Technique",
+      "rdfs:label": "Unexpected layouts",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:asymmetry",
+      "@type": "skill:Technique",
+      "rdfs:label": "Asymmetry",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:overlap",
+      "@type": "skill:Technique",
+      "rdfs:label": "Overlap",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:diagonal_flow",
+      "@type": "skill:Technique",
+      "rdfs:label": "Diagonal flow",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:grid_breaking_elements",
+      "@type": "skill:Technique",
+      "rdfs:label": "Grid-breaking elements",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:generous_negative_space",
+      "@type": "skill:Technique",
+      "rdfs:label": "Generous negative space",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:controlled_density",
+      "@type": "skill:Technique",
+      "rdfs:label": "Controlled density",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:gradient_meshes",
+      "@type": "skill:Technique",
+      "rdfs:label": "Gradient meshes",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:noise_textures",
+      "@type": "skill:Technique",
+      "rdfs:label": "Noise textures",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:geometric_patterns",
+      "@type": "skill:Technique",
+      "rdfs:label": "Geometric patterns",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:layered_transparencies",
+      "@type": "skill:Technique",
+      "rdfs:label": "Layered transparencies",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:dramatic_shadows",
+      "@type": "skill:Technique",
+      "rdfs:label": "Dramatic shadows",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:decorative_borders",
+      "@type": "skill:Technique",
+      "rdfs:label": "Decorative borders",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:custom_cursors",
+      "@type": "skill:Technique",
+      "rdfs:label": "Custom cursors",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:grain_overlays",
+      "@type": "skill:Technique",
+      "rdfs:label": "Grain overlays",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:motion_library",
+      "@type": "skill:Tool",
+      "rdfs:label": "Motion library for React",
+      "aether:origin": "core",
+      "skill:pairs_with": "tool:react"
+    },
+    {
+      "@id": "tool:react",
+      "@type": "skill:Tool",
+      "rdfs:label": "React",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:vue",
+      "@type": "skill:Tool",
+      "rdfs:label": "Vue",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:html_css_js",
+      "@type": "skill:Tool",
+      "rdfs:label": "HTML/CSS/JS",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:intentionality",
+      "@type": "skill:Concept",
+      "rdfs:label": "Intentionality",
+      "aether:origin": "core",
+      "skill:prioritizes": [
+        "concept:aesthetic_vision",
+        "concept:distinctiveness"
+      ]
+    },
+    {
+      "@id": "concept:purpose",
+      "@type": "skill:Concept",
+      "rdfs:label": "Purpose - What problem does this interface solve? Who uses it?",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:tone",
+      "@type": "skill:Concept",
+      "rdfs:label": "Tone",
+      "aether:origin": "core",
+      "skill:techniques": [
+        "technique:extreme_tone_selection"
+      ]
+    },
+    {
+      "@id": "concept:constraints",
+      "@type": "skill:Concept",
+      "rdfs:label": "Technical Constraints (framework, performance, accessibility)",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:differentiation",
+      "@type": "skill:Concept",
+      "rdfs:label": "Differentiation",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:make_unforgettable_interfaces"
+      ]
+    }
+  ]
+}

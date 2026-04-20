@@ -1,0 +1,779 @@
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "schema": "https://schema.org",
+    "aether": "http://aether.dev/ontology#"
+  },
+  "@graph": [
+    {
+      "@id": "person:thomas_jefferson",
+      "@type": "Person",
+      "rdfs:label": "Thomas Jefferson",
+      "birth_date": "1743-04-13",
+      "birth_year": 1743,
+      "death_date": "1826-07-04",
+      "death_year": 1826,
+      "birth_place": "Shadwell, Albemarle County, Virginia",
+      "residence": "Monticello",
+      "enslaved_persons_owned": 600,
+      "weather_observations": 19000,
+      "vegetable_varieties_grown": 330
+    },
+    {
+      "@id": "work:declaration_of_independence",
+      "@type": "Work",
+      "rdfs:label": "Declaration of Independence",
+      "year": 1776,
+      "adopted_date": "1776-07-04",
+      "signing_date": "1776-08-02",
+      "drafting_location": "7th and Market Streets, Philadelphia",
+      "drafting_period_days": 17,
+      "signatories": 56,
+      "author": "Thomas Jefferson"
+    },
+    {
+      "@id": "work:notes_on_virginia",
+      "@type": "Work",
+      "rdfs:label": "Notes on the State of Virginia",
+      "year": 1785,
+      "author": "Thomas Jefferson",
+      "type": "Scientific and political treatise"
+    },
+    {
+      "@id": "work:summary_view",
+      "@type": "Work",
+      "rdfs:label": "A Summary View of the Rights of British America",
+      "year": 1774,
+      "author": "Thomas Jefferson"
+    },
+    {
+      "@id": "work:manual_parliamentary_practice",
+      "@type": "Work",
+      "rdfs:label": "A Manual of Parliamentary Practice",
+      "year": 1801,
+      "author": "Thomas Jefferson"
+    },
+    {
+      "@id": "work:virginia_statute_religious_freedom",
+      "@type": "Work",
+      "rdfs:label": "Virginia Statute for Religious Freedom",
+      "year": 1786,
+      "author": "Thomas Jefferson"
+    },
+    {
+      "@id": "work:garden_book",
+      "@type": "Work",
+      "rdfs:label": "Garden Book",
+      "start_year": 1766,
+      "end_year": 1824,
+      "author": "Thomas Jefferson"
+    },
+    {
+      "@id": "person:john_adams",
+      "@type": "Person",
+      "rdfs:label": "John Adams",
+      "role": "Committee of Five member"
+    },
+    {
+      "@id": "person:benjamin_franklin",
+      "@type": "Person",
+      "rdfs:label": "Benjamin Franklin",
+      "role": "Committee of Five member"
+    },
+    {
+      "@id": "person:john_locke",
+      "@type": "Person",
+      "rdfs:label": "John Locke",
+      "rdfs:comment": "Author of Second Treatise of Government"
+    },
+    {
+      "@id": "person:george_mason",
+      "@type": "Person",
+      "rdfs:label": "George Mason",
+      "rdfs:comment": "Author of Virginia Declaration of Rights"
+    },
+    {
+      "@id": "person:lafayette",
+      "@type": "Person",
+      "rdfs:label": "Marquis de Lafayette",
+      "rdfs:comment": "French ally, Jefferson advised on Declaration of the Rights of Man"
+    },
+    {
+      "@id": "person:james_madison",
+      "@type": "Person",
+      "rdfs:label": "James Madison",
+      "rdfs:comment": "Political successor, President 1809-1817"
+    },
+    {
+      "@id": "person:james_monroe",
+      "@type": "Person",
+      "rdfs:label": "James Monroe",
+      "rdfs:comment": "Political successor, President 1817-1825"
+    },
+    {
+      "@id": "person:sally_hemings",
+      "@type": "Person",
+      "rdfs:label": "Sally Hemings",
+      "rdfs:comment": "Enslaved woman, DNA evidence confirmed relationship with Jefferson in 1998"
+    },
+    {
+      "@id": "person:martha_wayles_skelton",
+      "@type": "Person",
+      "rdfs:label": "Martha Wayles Skelton",
+      "rdfs:comment": "Jefferson's wife, married 1772, died 1782"
+    },
+    {
+      "@id": "person:andrea_palladio",
+      "@type": "Person",
+      "rdfs:label": "Andrea Palladio",
+      "rdfs:comment": "Italian architect, author of Four Books of Architecture"
+    },
+    {
+      "@id": "person:maria_cosway",
+      "@type": "Person",
+      "rdfs:label": "Maria Cosway",
+      "rdfs:comment": "Anglo-Italian painter, subject of Head and Heart dialogue"
+    },
+    {
+      "@id": "person:william_small",
+      "@type": "Person",
+      "rdfs:label": "William Small",
+      "rdfs:comment": "Scottish professor at William and Mary, introduced Enlightenment methods"
+    },
+    {
+      "@id": "person:george_wythe",
+      "@type": "Person",
+      "rdfs:label": "George Wythe",
+      "rdfs:comment": "Legal mentor, 1762-1767"
+    },
+    {
+      "@id": "location:monticello",
+      "@type": "Location",
+      "rdfs:label": "Monticello",
+      "rdfs:comment": "Jefferson's mountaintop estate, construction began 1768"
+    },
+    {
+      "@id": "location:france",
+      "@type": "Location",
+      "rdfs:label": "France",
+      "rdfs:comment": "Diplomatic residency 1784-1789"
+    },
+    {
+      "@id": "location:paris",
+      "@type": "Location",
+      "rdfs:label": "Paris",
+      "residences": [
+        "Hôtel de Landron",
+        "Hôtel de Langeac"
+      ]
+    },
+    {
+      "@id": "location:virginia",
+      "@type": "Location",
+      "rdfs:label": "Virginia",
+      "rdfs:comment": "Birth state, Albemarle County"
+    },
+    {
+      "@id": "location:philadelphia",
+      "@type": "Location",
+      "rdfs:label": "Philadelphia",
+      "rdfs:comment": "Site of Declaration drafting, 7th and Market Streets"
+    },
+    {
+      "@id": "location:nimes",
+      "@type": "Location",
+      "rdfs:label": "Nîmes",
+      "rdfs:comment": "Site of Maison Carrée, model for Virginia State Capitol"
+    },
+    {
+      "@id": "org:university_of_virginia",
+      "@type": "Organization",
+      "rdfs:label": "University of Virginia",
+      "founded_year": 1819,
+      "founder": "Thomas Jefferson"
+    },
+    {
+      "@id": "org:college_william_mary",
+      "@type": "Organization",
+      "rdfs:label": "College of William and Mary",
+      "rdfs:comment": "Jefferson enrolled 1760"
+    },
+    {
+      "@id": "org:continental_congress",
+      "@type": "Organization",
+      "rdfs:label": "Second Continental Congress",
+      "rdfs:comment": "Appointed Committee of Five, adopted Declaration"
+    },
+    {
+      "@id": "event:american_revolution",
+      "@type": "Event",
+      "rdfs:label": "American Revolution",
+      "period": "1775-1783"
+    },
+    {
+      "@id": "event:french_revolution",
+      "@type": "Event",
+      "rdfs:label": "French Revolution",
+      "start_year": 1789,
+      "rdfs:comment": "Jefferson present for storming of Bastille"
+    },
+    {
+      "@id": "event:louisiana_purchase",
+      "@type": "Event",
+      "rdfs:label": "Louisiana Purchase",
+      "year": 1803,
+      "cost": "15 million dollars"
+    },
+    {
+      "@id": "concept:natural_rights",
+      "@type": "Concept",
+      "rdfs:label": "Natural Rights",
+      "rdfs:comment": "Life, Liberty, and the pursuit of Happiness — derived from John Locke"
+    },
+    {
+      "@id": "concept:agrarianism",
+      "@type": "Concept",
+      "rdfs:label": "Agrarianism",
+      "rdfs:comment": "Belief that yeoman farmers are the most virtuous citizens"
+    },
+    {
+      "@id": "concept:separation_church_state",
+      "@type": "Concept",
+      "rdfs:label": "Separation of Church and State",
+      "rdfs:comment": "Wall of separation metaphor, Virginia Statute for Religious Freedom"
+    },
+    {
+      "@id": "concept:strict_constructionism",
+      "@type": "Concept",
+      "rdfs:label": "Strict Constructionism",
+      "rdfs:comment": "Federal government limited to powers explicitly enumerated in Constitution"
+    },
+    {
+      "@id": "concept:virginia_dynasty",
+      "@type": "Concept",
+      "rdfs:label": "Virginia Dynasty",
+      "rdfs:comment": "Jefferson, Madison, Monroe — controlled presidency for 24 of first 36 years",
+      "period": "1801-1825"
+    },
+    {
+      "@id": "role:president",
+      "@type": "Role",
+      "rdfs:label": "President of the United States",
+      "ordinal": "3rd",
+      "term_start": 1801,
+      "term_end": 1809
+    },
+    {
+      "@id": "role:minister_france",
+      "@type": "Role",
+      "rdfs:label": "Minister to France",
+      "term_start": 1785,
+      "term_end": 1789
+    },
+    {
+      "@id": "role:secretary_state",
+      "@type": "Role",
+      "rdfs:label": "Secretary of State",
+      "term_start": 1790,
+      "term_end": 1793
+    },
+    {
+      "@id": "role:vice_president",
+      "@type": "Role",
+      "rdfs:label": "Vice President",
+      "term_start": 1797,
+      "term_end": 1801
+    },
+    {
+      "@id": "role:governor_virginia",
+      "@type": "Role",
+      "rdfs:label": "Governor of Virginia",
+      "term_start": 1779,
+      "term_end": 1781
+    },
+    {
+      "@id": "period:enlightenment",
+      "@type": "TimePeriod",
+      "rdfs:label": "Age of Enlightenment",
+      "rdfs:comment": "Intellectual movement emphasizing reason, science, individual rights"
+    },
+    {
+      "@id": "aether:acquired/louisiana_purchase",
+      "rdfs:label": "Louisiana Purchase",
+      "originated_from": "France's financial exigencies",
+      "aether:origin": "acquired",
+      "aether:confidence": 0.8,
+      "aether:acquired_date": "2026-03-05T19:17:45.058858",
+      "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869",
+      "doubled": "nation's territorial expanse",
+      "aether:updated": "2026-03-05T19:17:45.059062",
+      "total_cost": "$15 million",
+      "direct_payment_to_france": "$11.25 million",
+      "claims_settlement": "$3.75 million",
+      "cost_per_acre": "three cents",
+      "presented": "constitutional questions",
+      "secured_control_of": "Mississippi River",
+      "provided_foundation_for": "westward expansion"
+    },
+    {
+      "@id": "aether:acquired/napoleon_bonaparte",
+      "rdfs:label": "Napoleon Bonaparte",
+      "required": "substantial funds",
+      "aether:origin": "acquired",
+      "aether:confidence": 0.8,
+      "aether:acquired_date": "2026-03-05T19:17:45.058891",
+      "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869",
+      "needed_funds_for": "European military campaigns",
+      "aether:updated": "2026-03-05T19:17:45.058908"
+    },
+    {
+      "@id": "aether:acquired/jefferson_administration",
+      "rdfs:label": "Jefferson administration",
+      "initially_sought_to_purchase": "New Orleans and West Florida",
+      "aether:origin": "acquired",
+      "aether:confidence": 0.8,
+      "aether:acquired_date": "2026-03-05T19:17:45.058919",
+      "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+    },
+    {
+      "@id": "aether:acquired/new_orleans_and_west_florida_purchase",
+      "rdfs:label": "New Orleans and West Florida purchase",
+      "cost": "$10 million",
+      "aether:origin": "acquired",
+      "aether:confidence": 0.8,
+      "aether:acquired_date": "2026-03-05T19:17:45.058934",
+      "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+    },
+    {
+      "@id": "aether:acquired/new_orleans_purchase",
+      "rdfs:label": "New Orleans purchase",
+      "purpose": "secure American navigation rights on Mississippi River",
+      "aether:origin": "acquired",
+      "aether:confidence": 0.8,
+      "aether:acquired_date": "2026-03-05T19:17:45.058949",
+      "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+    },
+    {
+      "@id": "aether:acquired/robert_r._livingston",
+      "rdfs:label": "Robert R. Livingston",
+      "role": "Minister to France",
+      "aether:origin": "acquired",
+      "aether:confidence": 0.8,
+      "aether:acquired_date": "2026-03-05T19:17:45.058964",
+      "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+    },
+    {
+      "@id": "aether:acquired/james_monroe",
+      "rdfs:label": "James Monroe",
+      "role": "envoy extraordinary",
+      "aether:origin": "acquired",
+      "aether:confidence": 0.8,
+      "aether:acquired_date": "2026-03-05T19:17:45.058975",
+      "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+    },
+    {
+      "@id": "aether:acquired/louisiana_territory",
+      "rdfs:label": "Louisiana Territory",
+      "size": "828,000 square miles",
+      "aether:origin": "acquired",
+      "aether:confidence": 0.8,
+      "aether:acquired_date": "2026-03-05T19:17:45.058985",
+      "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+    }
+  ],
+  "knowledge_graph_triples": [
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "AUTHORED",
+      "object": "Declaration of Independence",
+      "confidence": "stated",
+      "source_section": "2. Drafting the Declaration",
+      "citation_ref": "[22]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "AUTHORED",
+      "object": "Notes on the State of Virginia",
+      "confidence": "stated",
+      "source_section": "4. Key Published Works",
+      "citation_ref": "[31]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "AUTHORED",
+      "object": "A Summary View of the Rights of British America",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[3]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "AUTHORED",
+      "object": "Virginia Statute for Religious Freedom",
+      "confidence": "stated",
+      "source_section": "4. Key Published Works",
+      "citation_ref": "[14]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "AUTHORED",
+      "object": "A Manual of Parliamentary Practice",
+      "confidence": "stated",
+      "source_section": "4. Key Published Works",
+      "citation_ref": "[44]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "BORN_IN",
+      "object": "Virginia",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[1]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "RESIDED_AT",
+      "object": "Monticello",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[1]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "TRAVELED_TO",
+      "object": "France",
+      "confidence": "stated",
+      "source_section": "3. French Diplomatic Residency",
+      "citation_ref": "[2]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "TRAVELED_TO",
+      "object": "Nîmes",
+      "confidence": "stated",
+      "source_section": "3.2 European Tours",
+      "citation_ref": "[11]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "SERVED_AS",
+      "object": "President of the United States",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[1]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "SERVED_AS",
+      "object": "Minister to France",
+      "confidence": "stated",
+      "source_section": "3. French Diplomatic Residency",
+      "citation_ref": "[2]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "SERVED_AS",
+      "object": "Secretary of State",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[1]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "SERVED_AS",
+      "object": "Vice President",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[1]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "SERVED_AS",
+      "object": "Governor of Virginia",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[1]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "FOUNDED",
+      "object": "University of Virginia",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[1]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "STUDIED_AT",
+      "object": "College of William and Mary",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[3]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "MARRIED",
+      "object": "Martha Wayles Skelton",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[1]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "COLLABORATED_WITH",
+      "object": "John Adams",
+      "confidence": "stated",
+      "source_section": "2. Drafting the Declaration",
+      "citation_ref": "[22]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "COLLABORATED_WITH",
+      "object": "Benjamin Franklin",
+      "confidence": "stated",
+      "source_section": "2. Drafting the Declaration",
+      "citation_ref": "[22]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "COLLABORATED_WITH",
+      "object": "Marquis de Lafayette",
+      "confidence": "stated",
+      "source_section": "3.3 French Revolution",
+      "citation_ref": "[30]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "MENTORED_BY",
+      "object": "George Wythe",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[3]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "MENTORED_BY",
+      "object": "William Small",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[3]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "ADVOCATED",
+      "object": "Natural Rights",
+      "confidence": "stated",
+      "source_section": "4.1 Core Philosophies",
+      "citation_ref": "[21]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "ADVOCATED",
+      "object": "Agrarianism",
+      "confidence": "stated",
+      "source_section": "4.1 Core Philosophies",
+      "citation_ref": "[49]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "ADVOCATED",
+      "object": "Separation of Church and State",
+      "confidence": "stated",
+      "source_section": "4. Key Published Works",
+      "citation_ref": "[14]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "ADVOCATED",
+      "object": "Strict Constructionism",
+      "confidence": "stated",
+      "source_section": "4.1 Core Philosophies",
+      "citation_ref": "[15]"
+    },
+    {
+      "subject": "John Locke",
+      "predicate": "INFLUENCED",
+      "object": "Thomas Jefferson",
+      "confidence": "stated",
+      "source_section": "2.1 Composition Process",
+      "citation_ref": "[14]"
+    },
+    {
+      "subject": "George Mason",
+      "predicate": "INFLUENCED",
+      "object": "Declaration of Independence",
+      "confidence": "stated",
+      "source_section": "2.1 Composition Process",
+      "citation_ref": "[14]"
+    },
+    {
+      "subject": "Andrea Palladio",
+      "predicate": "INFLUENCED",
+      "object": "Thomas Jefferson",
+      "confidence": "stated",
+      "source_section": "5.3 Architectural Methodology",
+      "citation_ref": "[11]"
+    },
+    {
+      "subject": "Sally Hemings",
+      "predicate": "HAD_RELATIONSHIP_WITH",
+      "object": "Thomas Jefferson",
+      "confidence": "stated",
+      "source_section": "7.2 Sally Hemings Controversy",
+      "citation_ref": "[74]"
+    },
+    {
+      "subject": "James Madison",
+      "predicate": "SUCCEEDED",
+      "object": "Thomas Jefferson",
+      "confidence": "stated",
+      "source_section": "6.1 Virginia Dynasty",
+      "citation_ref": "[7]"
+    },
+    {
+      "subject": "James Monroe",
+      "predicate": "SUCCEEDED",
+      "object": "James Madison",
+      "confidence": "stated",
+      "source_section": "6.1 Virginia Dynasty",
+      "citation_ref": "[7]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "LIVED_DURING",
+      "object": "Age of Enlightenment",
+      "confidence": "stated",
+      "source_section": "1. Biography",
+      "citation_ref": "[3]"
+    },
+    {
+      "subject": "Declaration of Independence",
+      "predicate": "OCCURRED_DURING",
+      "object": "American Revolution",
+      "confidence": "stated",
+      "source_section": "2. Drafting the Declaration",
+      "citation_ref": "[22]"
+    },
+    {
+      "subject": "Thomas Jefferson",
+      "predicate": "WITNESSED",
+      "object": "French Revolution",
+      "confidence": "stated",
+      "source_section": "3.3 French Revolution",
+      "citation_ref": "[30]"
+    },
+    {
+      "subject": "Natural Rights",
+      "predicate": "DERIVED_FROM",
+      "object": "John Locke",
+      "confidence": "inferred",
+      "source_section": "4.1 Core Philosophies",
+      "citation_ref": "[14]"
+    },
+    {
+      "subject": "Virginia Dynasty",
+      "predicate": "INITIATED_BY",
+      "object": "Thomas Jefferson",
+      "confidence": "inferred",
+      "source_section": "6.1 Virginia Dynasty",
+      "citation_ref": "[7]"
+    }
+  ],
+  "entity_registry": [
+    {
+      "canonical_name": "Thomas Jefferson",
+      "type": "Person",
+      "aliases": [
+        "Jefferson",
+        "TJ",
+        "the third president"
+      ]
+    },
+    {
+      "canonical_name": "Declaration of Independence",
+      "type": "Work",
+      "aliases": [
+        "the Declaration",
+        "DoI"
+      ]
+    },
+    {
+      "canonical_name": "Monticello",
+      "type": "Location",
+      "aliases": [
+        "Jefferson's estate"
+      ]
+    },
+    {
+      "canonical_name": "France",
+      "type": "Location",
+      "aliases": [
+        "Kingdom of France"
+      ]
+    },
+    {
+      "canonical_name": "Virginia Dynasty",
+      "type": "Concept",
+      "aliases": [
+        "Jeffersonian succession"
+      ]
+    },
+    {
+      "canonical_name": "John Adams",
+      "type": "Person",
+      "aliases": [
+        "Adams"
+      ]
+    },
+    {
+      "canonical_name": "Benjamin Franklin",
+      "type": "Person",
+      "aliases": [
+        "Franklin"
+      ]
+    },
+    {
+      "canonical_name": "John Locke",
+      "type": "Person",
+      "aliases": [
+        "Locke"
+      ]
+    },
+    {
+      "canonical_name": "Marquis de Lafayette",
+      "type": "Person",
+      "aliases": [
+        "Lafayette"
+      ]
+    },
+    {
+      "canonical_name": "James Madison",
+      "type": "Person",
+      "aliases": [
+        "Madison"
+      ]
+    },
+    {
+      "canonical_name": "Sally Hemings",
+      "type": "Person",
+      "aliases": [
+        "Hemings"
+      ]
+    },
+    {
+      "canonical_name": "University of Virginia",
+      "type": "Organization",
+      "aliases": [
+        "UVA"
+      ]
+    },
+    {
+      "canonical_name": "Natural Rights",
+      "type": "Concept",
+      "aliases": [
+        "inalienable rights",
+        "natural law"
+      ]
+    }
+  ]
+}

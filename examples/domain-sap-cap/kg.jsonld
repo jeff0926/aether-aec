@@ -1,0 +1,197 @@
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "aether": "http://aether.dev/ontology#"
+  },
+  "@graph": [
+    {
+      "subject": {
+        "name": "Daniel Hutzel",
+        "type": "Person"
+      },
+      "predicate": "SERVED_AS",
+      "object": {
+        "name": "Chief Product Owner",
+        "type": "Role"
+      },
+      "confidence": "stated",
+      "source_section": "1. Definition, Scope, and Professional Context of the Discipline",
+      "citation_ref": ""
+    },
+    {
+      "subject": {
+        "name": "Node.js 9.8",
+        "type": "Product"
+      },
+      "predicate": "RELEASED_IN",
+      "object": {
+        "name": "February 2026",
+        "type": "TimePeriod"
+      },
+      "confidence": "stated",
+      "source_section": "1. Definition, Scope, and Professional Context of the Discipline",
+      "citation_ref": ""
+    },
+    {
+      "subject": {
+        "name": "Java 4.8",
+        "type": "Product"
+      },
+      "predicate": "RELEASED_IN",
+      "object": {
+        "name": "February 2026",
+        "type": "TimePeriod"
+      },
+      "confidence": "stated",
+      "source_section": "1. Definition, Scope, and Professional Context of the Discipline",
+      "citation_ref": ""
+    },
+    {
+      "subject": {
+        "name": "SAP Cloud Application Programming Model",
+        "type": "Technology"
+      },
+      "predicate": "COMPLIES_WITH",
+      "object": {
+        "name": "OData V4",
+        "type": "Regulation"
+      },
+      "confidence": "stated",
+      "source_section": "2. Regulatory Framework, Standards, and Governing Bodies",
+      "citation_ref": "[18, 20]"
+    },
+    {
+      "subject": {
+        "name": "OData V4",
+        "type": "Regulation"
+      },
+      "predicate": "APPROVED_BY",
+      "object": {
+        "name": "OASIS",
+        "type": "Organization"
+      },
+      "confidence": "stated",
+      "source_section": "2. Regulatory Framework, Standards, and Governing Bodies",
+      "citation_ref": ""
+    },
+    {
+      "subject": {
+        "name": "SAP Business Technology Platform",
+        "type": "Platform"
+      },
+      "predicate": "ACHIEVED",
+      "object": {
+        "name": "SOC 2 Type 2",
+        "type": "Metric"
+      },
+      "confidence": "stated",
+      "source_section": "2. Regulatory Framework, Standards, and Governing Bodies",
+      "citation_ref": ""
+    },
+    {
+      "subject": {
+        "name": "Compositions",
+        "type": "Concept"
+      },
+      "predicate": "ENABLES",
+      "object": {
+        "name": "Cascaded Deletes",
+        "type": "Concept"
+      },
+      "confidence": "stated",
+      "source_section": "3. Core Methodologies, Workflows, and Best Practices",
+      "citation_ref": ""
+    },
+    {
+      "subject": {
+        "name": "SAP Fiori Elements",
+        "type": "Technology"
+      },
+      "predicate": "CONFIGURED_BY",
+      "object": {
+        "name": "CDS Annotations",
+        "type": "Concept"
+      },
+      "confidence": "stated",
+      "source_section": "3. Core Methodologies, Workflows, and Best Practices",
+      "citation_ref": ""
+    },
+    {
+      "subject": {
+        "name": "Cloud MTA Build Tool",
+        "type": "Technology"
+      },
+      "predicate": "PACKAGES",
+      "object": {
+        "name": "Multi-target Application",
+        "type": "Concept"
+      },
+      "confidence": "stated",
+      "source_section": "4. Tools, Platforms, and Technology Stack",
+      "citation_ref": ""
+    },
+    {
+      "subject": {
+        "name": "Project Piper",
+        "type": "Technology"
+      },
+      "predicate": "IMPLEMENTS",
+      "object": {
+        "name": "Continuous Integration",
+        "type": "Concept"
+      },
+      "confidence": "stated",
+      "source_section": "4. Tools, Platforms, and Technology Stack",
+      "citation_ref": ""
+    },
+    {
+      "subject": {
+        "name": "C_CPE_16",
+        "type": "Concept"
+      },
+      "predicate": "VALIDATES",
+      "object": {
+        "name": "SAP Cloud Application Programming Model",
+        "type": "Technology"
+      },
+      "confidence": "stated",
+      "source_section": "6. Certification Paths, Training Resources, and Professional Development",
+      "citation_ref": ""
+    },
+    {
+      "subject": {
+        "name": "Joule",
+        "type": "Technology"
+      },
+      "predicate": "REDUCES",
+      "object": {
+        "name": "Development Time",
+        "type": "Metric"
+      },
+      "confidence": "stated",
+      "source_section": "7. Case Studies and Implementation Examples",
+      "citation_ref": ""
+    },
+    {
+      "canonical_name": "Daniel Hutzel",
+      "type": "Person",
+      "aliases": [
+        "daniel.hutzel"
+      ]
+    },
+    {
+      "canonical_name": "Node.js 9.8",
+      "type": "Product",
+      "aliases": [
+        "CAP Node.js 9.8"
+      ]
+    },
+    {
+      "canonical_name": "Java 4.8",
+      "type": "Product",
+      "aliases": [
+        "CAP Java 4.8"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,379 @@
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "aether": "http://aether.dev/ontology#",
+    "skill": "http://aether.dev/skill#"
+  },
+  "@graph": [
+    {
+      "@id": "concept:strategic_vision",
+      "@type": "aether:Concept",
+      "rdfs:label": "Strategic Vision",
+      "aether:origin": "core",
+      "aether:description": "Long-term directional clarity for the organization"
+    },
+    {
+      "@id": "concept:company_strategy",
+      "@type": "aether:Concept",
+      "rdfs:label": "Company Strategy",
+      "aether:origin": "core",
+      "aether:description": "Organizational approach to achieving goals"
+    },
+    {
+      "@id": "concept:leadership_direction",
+      "@type": "aether:Concept",
+      "rdfs:label": "Leadership Direction",
+      "aether:origin": "core",
+      "aether:description": "Executive guidance and decision-making"
+    },
+    {
+      "@id": "concept:organizational_priorities",
+      "@type": "aether:Concept",
+      "rdfs:label": "Organizational Priorities",
+      "aether:origin": "core",
+      "aether:description": "What matters most for the company"
+    },
+    {
+      "@id": "concept:business_direction",
+      "@type": "aether:Concept",
+      "rdfs:label": "Business Direction",
+      "aether:origin": "core",
+      "aether:description": "Strategic path for growth and success"
+    },
+    {
+      "@id": "rule:flat_hierarchy_60_reports",
+      "@type": "skill:Rule",
+      "rdfs:label": "Maintain radically flat org with up to 60 direct reports",
+      "aether:origin": "core",
+      "skill:avoids": "antipattern:management_filters"
+    },
+    {
+      "@id": "rule:no_routine_one_on_ones",
+      "@type": "skill:Rule",
+      "rdfs:label": "Prohibit private 1:1 meetings for routine status",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:group_context_updates",
+      "@type": "skill:Rule",
+      "rdfs:label": "Conduct all updates in shared-context group settings",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:engineers_present_to_ceo",
+      "@type": "skill:Rule",
+      "rdfs:label": "Mid-level engineers present directly to CEO",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:information_sanitization",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Filtering/beautifying failures through management layers",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:complacency_from_dominance",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Allowing market success to diminish R&D urgency",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:flywheel_market",
+      "@type": "skill:Technique",
+      "rdfs:label": "Use accessible markets (gaming) to fund long-term R&D",
+      "aether:origin": "core",
+      "skill:enables": "concept:platform_ecosystem"
+    },
+    {
+      "@id": "technique:self_healing_pivot",
+      "@type": "skill:Technique",
+      "rdfs:label": "Abandon failed bets and aggressively re-allocate to survival vector",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:perpetual_existentialism",
+      "@type": "skill:Concept",
+      "rdfs:label": "Operating as if 30 days from failure at all times",
+      "aether:origin": "core",
+      "skill:requires": "rule:30_days_from_failure"
+    },
+    {
+      "@id": "rule:30_days_from_failure",
+      "@type": "skill:Rule",
+      "rdfs:label": "NVIDIA motto: operating on the brink of obsolescence",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:code_red_response",
+      "@type": "skill:Rule",
+      "rdfs:label": "Immediate internal mobilization when competitive threat emerges",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:products_over_papers",
+      "@type": "skill:Rule",
+      "rdfs:label": "Products create durable advantage, not research publications",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:ethical_red_lines",
+      "@type": "skill:Rule",
+      "rdfs:label": "Embed safety principles into binding contracts",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:bolt_on_ai",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Treating AI as add-on tool rather than integrated workflow",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:competitive_paranoia",
+      "@type": "skill:Technique",
+      "rdfs:label": "Scale infrastructure ahead of demand",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:sticky_personalization",
+      "@type": "skill:Technique",
+      "rdfs:label": "Build personalization that prevents switching",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:act_two_reasoning",
+      "@type": "skill:Concept",
+      "rdfs:label": "Shift from knowledge generation to thought-driven reasoning",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:zero_marketing_budget",
+      "@type": "skill:Rule",
+      "rdfs:label": "Achieve growth through product virality, not spend",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:daily_arr_tracking",
+      "@type": "skill:Rule",
+      "rdfs:label": "Monitor revenue as real-time operational health signal",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:premature_scaling",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Scaling before strong retention is proven",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:vibe_coding",
+      "@type": "skill:Technique",
+      "rdfs:label": "Founder as orchestrator of intent while AI handles code syntax",
+      "aether:origin": "core",
+      "skill:requires": "concept:magic_moment"
+    },
+    {
+      "@id": "technique:adhd_as_superpower",
+      "@type": "skill:Technique",
+      "rdfs:label": "Hyperfocus sessions of 10-14 hours on single problems",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:magic_moment",
+      "@type": "skill:Concept",
+      "rdfs:label": "Non-technical users deploying value in under 60 seconds",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:five_hundred_day_exit",
+      "@type": "skill:Concept",
+      "rdfs:label": "Compress entire startup lifecycle into months",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:empty_chair_customer",
+      "@type": "skill:Rule",
+      "rdfs:label": "Every meeting includes representation of the customer",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:two_pizza_teams",
+      "@type": "skill:Rule",
+      "rdfs:label": "Teams small enough to be fed by two pizzas",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:type_1_vs_type_2",
+      "@type": "skill:Rule",
+      "rdfs:label": "Distinguish irreversible (Type 1) from reversible (Type 2) decisions",
+      "aether:origin": "core",
+      "skill:contradicts": "antipattern:day_two_thinking"
+    },
+    {
+      "@id": "antipattern:day_two_thinking",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Stasis, irrelevance, decline from losing Day 1 urgency",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:working_backwards",
+      "@type": "skill:Technique",
+      "rdfs:label": "Start from customer press release, work backward to requirements",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:signal_to_noise",
+      "@type": "skill:Rule",
+      "rdfs:label": "Ruthlessly eliminate noise; focus on 3 things from 100",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:hundred_to_three",
+      "@type": "skill:Rule",
+      "rdfs:label": "Cut product line from hundreds to three focused bets",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:feature_bloat",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Adding features without killing equal complexity",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:dri_accountability",
+      "@type": "skill:Technique",
+      "rdfs:label": "Single Directly Responsible Individual per initiative",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:management_filters",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Sanitizing technical status reports for executives",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:growth_mindset_mandate",
+      "@type": "skill:Rule",
+      "rdfs:label": "Organization must be learn-it-all, not know-it-all",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:know_it_all_culture",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Fixed mindset that resists learning and adaptation",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:cultural_transformation",
+      "@type": "skill:Technique",
+      "rdfs:label": "Systematic shift from competitive to collaborative culture",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:platform_ecosystem",
+      "@type": "skill:Concept",
+      "rdfs:label": "Transform from products to platform enabling others",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:safety_first_scaling",
+      "@type": "skill:Rule",
+      "rdfs:label": "Safety research scales proportionally with capability",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:constitutional_ai_principles",
+      "@type": "skill:Rule",
+      "rdfs:label": "Embed behavioral constraints at training level",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:capability_without_safety",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Scaling capability faster than safety measures",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:responsible_scaling",
+      "@type": "skill:Concept",
+      "rdfs:label": "Incremental deployment with safety checkpoints",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:systematic_progress",
+      "@type": "skill:Rule",
+      "rdfs:label": "Prioritize measured, peer-reviewed progress over breaking things",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:scientific_leadership",
+      "@type": "skill:Rule",
+      "rdfs:label": "Balance audacious goals with rigorous scientific methods",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:interdisciplinary_recruitment",
+      "@type": "skill:Technique",
+      "rdfs:label": "Hire economists and biologists alongside AI engineers",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:cathedral_of_knowledge",
+      "@type": "skill:Concept",
+      "rdfs:label": "Environment for democratized research and cross-pollination",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:truth_seeking_protocol",
+      "@type": "skill:Rule",
+      "rdfs:label": "Optimize models for objective truth over political correctness",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:dilbert_rule_override",
+      "@type": "skill:Rule",
+      "rdfs:label": "If a company rule is ridiculous, change it immediately",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:vertical_integration",
+      "@type": "skill:Technique",
+      "rdfs:label": "Control the full stack from in-house silicon to software",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:agentic_replacement",
+      "@type": "skill:Technique",
+      "rdfs:label": "Replace traditional management roles with agentic loops",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:data_integrity_priority",
+      "@type": "skill:Rule",
+      "rdfs:label": "Prioritize high-quality data labeling over sheer quantity",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:boundary_threshold_monitoring",
+      "@type": "skill:Rule",
+      "rdfs:label": "Set explicit exit thresholds to prevent loss of control",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:managerial_bloat",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Hiring managers during pre-product-market fit phase",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:cognition_engineering",
+      "@type": "skill:Technique",
+      "rdfs:label": "Shift focus to thought-construction and test-time scaling",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:act_two_agency",
+      "@type": "skill:Concept",
+      "rdfs:label": "Era where AI becomes the primary user of workflow capabilities",
+      "aether:origin": "core"
+    }
+  ]
+}

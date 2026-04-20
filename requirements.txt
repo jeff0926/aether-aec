@@ -1,0 +1,27 @@
+# AEC — Agent Education Calibration
+# Python 3.10+ required (uses str | None union syntax)
+
+# Core verification: stdlib only — no external dependencies
+
+# Layer 2 LLM verification (optional — enables type-driven verification)
+# pip install anthropic
+# anthropic>=0.40.0
+
+# Alternative LLM provider (optional)
+# openai>=1.0.0
+
+# REST adapter (optional — enables HTTP endpoint)
+# pip install flask
+# flask>=3.0.0
+
+# Negation detection — primary path (optional — regex fallback always available)
+# pip install spacy && python -m spacy download en_core_web_sm
+# spacy>=3.7.0
+
+# Redis queue backend (optional — enables cross-service education queue)
+# pip install redis
+# redis>=5.0.0
+
+# Install everything:
+# pip install anthropic flask redis spacy
+# python -m spacy download en_core_web_sm

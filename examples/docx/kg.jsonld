@@ -1,0 +1,669 @@
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "aether": "http://aether.dev/ontology#",
+    "skill": "http://aether.dev/skill#"
+  },
+  "@graph": [
+    {
+      "@id": "persona:document_engineer",
+      "@type": "skill:Trait",
+      "rdfs:label": "Document Engineer",
+      "aether:origin": "core",
+      "skill:prioritizes": [
+        "concept:validation",
+        "concept:precision",
+        "concept:systematic_approach"
+      ],
+      "skill:contains": [
+        "trait:technical",
+        "trait:detail_oriented",
+        "trait:precise",
+        "trait:systematic",
+        "trait:cautious",
+        "trait:opinionated",
+        "trait:perfectionist",
+        "trait:analytical"
+      ]
+    },
+    {
+      "@id": "trait:technical",
+      "@type": "skill:Trait",
+      "rdfs:label": "Technical",
+      "aether:origin": "core",
+      "skill:enables": [
+        "technique:xml_manipulation",
+        "technique:validation_workflow"
+      ]
+    },
+    {
+      "@id": "trait:detail_oriented",
+      "@type": "skill:Trait",
+      "rdfs:label": "Detail Oriented",
+      "aether:origin": "core",
+      "skill:enables": [
+        "rule:always_validate_after_creation",
+        "rule:set_dual_table_widths"
+      ]
+    },
+    {
+      "@id": "trait:precise",
+      "@type": "skill:Trait",
+      "rdfs:label": "Precise",
+      "aether:origin": "core",
+      "skill:enables": [
+        "rule:explicit_page_size_setting",
+        "rule:use_dxa_units"
+      ]
+    },
+    {
+      "@id": "trait:systematic",
+      "@type": "skill:Trait",
+      "rdfs:label": "Systematic",
+      "aether:origin": "core",
+      "skill:enables": [
+        "technique:unpack_edit_repack",
+        "concept:structured_workflow"
+      ]
+    },
+    {
+      "@id": "trait:cautious",
+      "@type": "skill:Trait",
+      "rdfs:label": "Cautious",
+      "aether:origin": "core",
+      "skill:enables": [
+        "rule:validate_before_use",
+        "technique:backup_before_edit"
+      ]
+    },
+    {
+      "@id": "trait:opinionated",
+      "@type": "skill:Trait",
+      "rdfs:label": "Opinionated",
+      "aether:origin": "core",
+      "skill:enables": [
+        "rule:use_arial_default",
+        "rule:avoid_unicode_bullets"
+      ]
+    },
+    {
+      "@id": "trait:perfectionist",
+      "@type": "skill:Trait",
+      "rdfs:label": "Perfectionist",
+      "aether:origin": "core",
+      "skill:enables": [
+        "rule:dual_width_tables",
+        "rule:explicit_margin_setting"
+      ]
+    },
+    {
+      "@id": "trait:analytical",
+      "@type": "skill:Trait",
+      "rdfs:label": "Analytical",
+      "aether:origin": "core",
+      "skill:enables": [
+        "technique:raw_xml_access",
+        "concept:docx_structure_understanding"
+      ]
+    },
+    {
+      "@id": "concept:docx_architecture",
+      "@type": "skill:Concept",
+      "rdfs:label": "DOCX Architecture",
+      "aether:origin": "core",
+      "skill:contains": [
+        "concept:zip_archive_structure",
+        "concept:xml_content"
+      ]
+    },
+    {
+      "@id": "concept:zip_archive_structure",
+      "@type": "skill:Concept",
+      "rdfs:label": "ZIP Archive Structure",
+      "aether:origin": "core",
+      "skill:enables": [
+        "technique:unpack_edit_repack"
+      ]
+    },
+    {
+      "@id": "concept:xml_content",
+      "@type": "skill:Concept",
+      "rdfs:label": "XML Content",
+      "aether:origin": "core",
+      "skill:techniques": [
+        "technique:raw_xml_access",
+        "technique:xml_manipulation"
+      ]
+    },
+    {
+      "@id": "concept:document_operations",
+      "@type": "skill:Concept",
+      "rdfs:label": "Document Operations",
+      "aether:origin": "core",
+      "skill:contains": [
+        "concept:reading_content",
+        "concept:creating_documents",
+        "concept:editing_documents",
+        "concept:conversion"
+      ]
+    },
+    {
+      "@id": "concept:reading_content",
+      "@type": "skill:Concept",
+      "rdfs:label": "Reading Content",
+      "aether:origin": "core",
+      "skill:techniques": [
+        "technique:pandoc_extraction",
+        "technique:raw_xml_access"
+      ],
+      "skill:tools": [
+        "tool:pandoc",
+        "tool:unpack_script"
+      ]
+    },
+    {
+      "@id": "concept:creating_documents",
+      "@type": "skill:Concept",
+      "rdfs:label": "Creating Documents",
+      "aether:origin": "core",
+      "skill:techniques": [
+        "technique:docx_js_generation",
+        "technique:validation_workflow"
+      ],
+      "skill:tools": [
+        "tool:docx_js"
+      ],
+      "skill:rules": [
+        "rule:always_validate_after_creation",
+        "rule:explicit_page_size_setting"
+      ]
+    },
+    {
+      "@id": "concept:editing_documents",
+      "@type": "skill:Concept",
+      "rdfs:label": "Editing Documents",
+      "aether:origin": "core",
+      "skill:techniques": [
+        "technique:unpack_edit_repack"
+      ],
+      "skill:rules": [
+        "rule:validate_before_use"
+      ]
+    },
+    {
+      "@id": "concept:conversion",
+      "@type": "skill:Concept",
+      "rdfs:label": "Conversion",
+      "aether:origin": "core",
+      "skill:contains": [
+        "concept:doc_to_docx",
+        "concept:docx_to_images",
+        "concept:tracked_changes_acceptance"
+      ],
+      "skill:tools": [
+        "tool:soffice",
+        "tool:pdftoppm"
+      ]
+    },
+    {
+      "@id": "concept:doc_to_docx",
+      "@type": "skill:Concept",
+      "rdfs:label": "DOC to DOCX Conversion",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:convert_legacy_doc_first"
+      ],
+      "skill:tools": [
+        "tool:soffice"
+      ]
+    },
+    {
+      "@id": "concept:docx_to_images",
+      "@type": "skill:Concept",
+      "rdfs:label": "DOCX to Images",
+      "aether:origin": "core",
+      "skill:techniques": [
+        "technique:pdf_intermediate_conversion"
+      ],
+      "skill:tools": [
+        "tool:soffice",
+        "tool:pdftoppm"
+      ]
+    },
+    {
+      "@id": "concept:tracked_changes_acceptance",
+      "@type": "skill:Concept",
+      "rdfs:label": "Tracked Changes Acceptance",
+      "aether:origin": "core",
+      "skill:tools": [
+        "tool:accept_changes_script"
+      ],
+      "skill:requires": [
+        "tool:libreoffice"
+      ]
+    },
+    {
+      "@id": "concept:page_configuration",
+      "@type": "skill:Concept",
+      "rdfs:label": "Page Configuration",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:explicit_page_size_setting",
+        "rule:use_dxa_units",
+        "rule:explicit_margin_setting"
+      ],
+      "skill:avoids": [
+        "antipattern:default_a4_assumption"
+      ],
+      "skill:contains": [
+        "concept:dxa_units",
+        "concept:page_sizes",
+        "concept:landscape_orientation"
+      ]
+    },
+    {
+      "@id": "concept:dxa_units",
+      "@type": "skill:Concept",
+      "rdfs:label": "DXA Units",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:use_dxa_units"
+      ]
+    },
+    {
+      "@id": "concept:page_sizes",
+      "@type": "skill:Concept",
+      "rdfs:label": "Page Sizes",
+      "aether:origin": "core",
+      "skill:contains": [
+        "concept:us_letter",
+        "concept:a4_default"
+      ]
+    },
+    {
+      "@id": "concept:us_letter",
+      "@type": "skill:Concept",
+      "rdfs:label": "US Letter",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:a4_default",
+      "@type": "skill:Concept",
+      "rdfs:label": "A4 Default",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "concept:landscape_orientation",
+      "@type": "skill:Concept",
+      "rdfs:label": "Landscape Orientation",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:pass_portrait_dimensions_for_landscape"
+      ]
+    },
+    {
+      "@id": "concept:styling",
+      "@type": "skill:Concept",
+      "rdfs:label": "Styling",
+      "aether:origin": "core",
+      "skill:contains": [
+        "concept:font_selection",
+        "concept:heading_overrides",
+        "concept:color_choices"
+      ],
+      "skill:rules": [
+        "rule:use_arial_default",
+        "rule:override_builtin_headings",
+        "rule:keep_titles_black"
+      ]
+    },
+    {
+      "@id": "concept:font_selection",
+      "@type": "skill:Concept",
+      "rdfs:label": "Font Selection",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:use_arial_default"
+      ]
+    },
+    {
+      "@id": "concept:heading_overrides",
+      "@type": "skill:Concept",
+      "rdfs:label": "Heading Overrides",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:override_builtin_headings",
+        "rule:use_exact_heading_ids"
+      ]
+    },
+    {
+      "@id": "concept:color_choices",
+      "@type": "skill:Concept",
+      "rdfs:label": "Color Choices",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:keep_titles_black"
+      ]
+    },
+    {
+      "@id": "concept:lists",
+      "@type": "skill:Concept",
+      "rdfs:label": "Lists",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:avoid_unicode_bullets",
+        "rule:use_numbering_config"
+      ],
+      "skill:avoids": [
+        "antipattern:manual_bullet_insertion",
+        "antipattern:unicode_bullet_characters"
+      ],
+      "skill:techniques": [
+        "technique:levelformat_bullet_usage"
+      ]
+    },
+    {
+      "@id": "concept:tables",
+      "@type": "skill:Concept",
+      "rdfs:label": "Tables",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:set_dual_table_widths",
+        "rule:use_dxa_for_tables",
+        "rule:use_shading_clear"
+      ],
+      "skill:avoids": [
+        "antipattern:percentage_widths",
+        "antipattern:solid_shading_backgrounds"
+      ]
+    },
+    {
+      "@id": "concept:validation",
+      "@type": "skill:Concept",
+      "rdfs:label": "Validation",
+      "aether:origin": "core",
+      "skill:rules": [
+        "rule:always_validate_after_creation",
+        "rule:validate_before_use"
+      ],
+      "skill:techniques": [
+        "technique:validation_workflow"
+      ],
+      "skill:tools": [
+        "tool:validate_script"
+      ]
+    },
+    {
+      "@id": "concept:precision",
+      "@type": "skill:Concept",
+      "rdfs:label": "Precision",
+      "aether:origin": "core",
+      "skill:enables": [
+        "rule:explicit_page_size_setting",
+        "rule:use_dxa_units"
+      ]
+    },
+    {
+      "@id": "concept:systematic_approach",
+      "@type": "skill:Concept",
+      "rdfs:label": "Systematic Approach",
+      "aether:origin": "core",
+      "skill:enables": [
+        "technique:unpack_edit_repack",
+        "technique:validation_workflow"
+      ]
+    },
+    {
+      "@id": "concept:structured_workflow",
+      "@type": "skill:Concept",
+      "rdfs:label": "Structured Workflow",
+      "aether:origin": "core",
+      "skill:contains": [
+        "technique:docx_js_generation",
+        "technique:validation_workflow"
+      ]
+    },
+    {
+      "@id": "concept:docx_structure_understanding",
+      "@type": "skill:Concept",
+      "rdfs:label": "DOCX Structure Understanding",
+      "aether:origin": "core",
+      "skill:enables": [
+        "technique:xml_manipulation",
+        "technique:raw_xml_access"
+      ]
+    },
+    {
+      "@id": "rule:convert_legacy_doc_first",
+      "@type": "skill:Rule",
+      "rdfs:label": "Legacy .doc files must be converted before editing",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:always_validate_after_creation",
+      "@type": "skill:Rule",
+      "rdfs:label": "After creating the file, validate it",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:validate_before_use",
+      "@type": "skill:Rule",
+      "rdfs:label": "If validation fails, unpack, fix the XML, and repack",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:explicit_page_size_setting",
+      "@type": "skill:Rule",
+      "rdfs:label": "Always set page size explicitly for consistent results",
+      "aether:origin": "core",
+      "skill:contradicts": "antipattern:default_a4_assumption"
+    },
+    {
+      "@id": "rule:use_dxa_units",
+      "@type": "skill:Rule",
+      "rdfs:label": "1440 DXA = 1 inch",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:explicit_margin_setting",
+      "@type": "skill:Rule",
+      "rdfs:label": "Always specify margins explicitly",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:pass_portrait_dimensions_for_landscape",
+      "@type": "skill:Rule",
+      "rdfs:label": "Pass portrait dimensions and let docx-js handle the swap for landscape",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:use_arial_default",
+      "@type": "skill:Rule",
+      "rdfs:label": "Use Arial as the default font (universally supported)",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:keep_titles_black",
+      "@type": "skill:Rule",
+      "rdfs:label": "Keep titles black for readability",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:override_builtin_headings",
+      "@type": "skill:Rule",
+      "rdfs:label": "Use exact IDs to override built-in styles",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:use_exact_heading_ids",
+      "@type": "skill:Rule",
+      "rdfs:label": "Use exact IDs like 'Heading1', 'Heading2' to override built-in styles",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:avoid_unicode_bullets",
+      "@type": "skill:Rule",
+      "rdfs:label": "NEVER use unicode bullets",
+      "aether:origin": "core",
+      "skill:contradicts": "antipattern:unicode_bullet_characters"
+    },
+    {
+      "@id": "rule:use_numbering_config",
+      "@type": "skill:Rule",
+      "rdfs:label": "Use numbering config with LevelFormat.BULLET",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:set_dual_table_widths",
+      "@type": "skill:Rule",
+      "rdfs:label": "Tables need dual widths - set both columnWidths on table AND width on each cell",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "rule:use_dxa_for_tables",
+      "@type": "skill:Rule",
+      "rdfs:label": "Always use DXA for table widths (percentages break in Google Docs)",
+      "aether:origin": "core",
+      "skill:contradicts": "antipattern:percentage_widths"
+    },
+    {
+      "@id": "rule:use_shading_clear",
+      "@type": "skill:Rule",
+      "rdfs:label": "Use ShadingType.CLEAR (not SOLID) to prevent black backgrounds",
+      "aether:origin": "core",
+      "skill:contradicts": "antipattern:solid_shading_backgrounds"
+    },
+    {
+      "@id": "antipattern:default_a4_assumption",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "DOCX-js defaults to A4, not US Letter",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:manual_bullet_insertion",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Never manually insert bullet characters",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:unicode_bullet_characters",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Unicode bullet characters (• or \\u2022)",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:percentage_widths",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "Percentages break in Google Docs",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "antipattern:solid_shading_backgrounds",
+      "@type": "skill:AntiPattern",
+      "rdfs:label": "ShadingType.SOLID creates black backgrounds",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:pandoc_extraction",
+      "@type": "skill:Technique",
+      "rdfs:label": "Text extraction with tracked changes using pandoc",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:raw_xml_access",
+      "@type": "skill:Technique",
+      "rdfs:label": "Raw XML access via unpacking",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:docx_js_generation",
+      "@type": "skill:Technique",
+      "rdfs:label": "Generate .docx files with JavaScript",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:validation_workflow",
+      "@type": "skill:Technique",
+      "rdfs:label": "Generate, then validate workflow",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:unpack_edit_repack",
+      "@type": "skill:Technique",
+      "rdfs:label": "Unpack → edit XML → repack",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:xml_manipulation",
+      "@type": "skill:Technique",
+      "rdfs:label": "Direct XML manipulation",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:pdf_intermediate_conversion",
+      "@type": "skill:Technique",
+      "rdfs:label": "Convert to PDF then to images",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:levelformat_bullet_usage",
+      "@type": "skill:Technique",
+      "rdfs:label": "Using LevelFormat.BULLET for proper list formatting",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "technique:backup_before_edit",
+      "@type": "skill:Technique",
+      "rdfs:label": "Backup before editing existing documents",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:pandoc",
+      "@type": "skill:Tool",
+      "rdfs:label": "Pandoc",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:unpack_script",
+      "@type": "skill:Tool",
+      "rdfs:label": "Unpack Script (python scripts/office/unpack.py)",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:docx_js",
+      "@type": "skill:Tool",
+      "rdfs:label": "docx-js (npm install -g docx)",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:validate_script",
+      "@type": "skill:Tool",
+      "rdfs:label": "Validate Script (python scripts/office/validate.py)",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:soffice",
+      "@type": "skill:Tool",
+      "rdfs:label": "LibreOffice soffice (python scripts/office/soffice.py)",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:pdftoppm",
+      "@type": "skill:Tool",
+      "rdfs:label": "pdftoppm",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:accept_changes_script",
+      "@type": "skill:Tool",
+      "rdfs:label": "Accept Changes Script (python scripts/accept_changes.py)",
+      "aether:origin": "core"
+    },
+    {
+      "@id": "tool:libreoffice",
+      "@type": "skill:Tool",
+      "rdfs:label": "LibreOffice",
+      "aether:origin": "core"
+    }
+  ]
+}
