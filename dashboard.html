@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aether-aec Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-data/7.1.9/vis-data.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/vis-network.min.js"></script>
+  <style>
+    :root {
+      --aec-blue: #2E4057;
+      --aec-green: #1B5E20;
+      --aec-red: #B71C1C;
+      --aec-orange: #E65100;
+      --aec-gray: #607D8B;
+      --aec-light: #F5F7FA;
+      --aec-white: #FFFFFF;
+      --node-rule: #1565C0;
+      --node-antipattern: #C62828;
+      --node-technique: #2E7D32;
+      --node-concept: #6A1B9A;
+      --node-tool: #EF6C00;
+      --node-trait: #00695C;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--aec-light);
+      color: #333;
+      min-height: 100vh;
+    }
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: var(--aec-white);
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .header-left { display: flex; flex-direction: column; }
+    .wordmark { font-size: 24px; font-weight: 600; color: var(--aec-blue); }
+    .subtitle { font-size: 12px; color: var(--aec-gray); margin-top: 2px; }
+    .header-center { display: flex; align-items: center; gap: 16px; }
+    .score-gauge { position: relative; width: 100px; height: 60px; }
+    .score-gauge svg { width: 100%; height: 100%; }
+    .score-number { font-size: 28px; font-weight: 600; color: var(--aec-blue); }
+    .score-badge {
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .score-badge.pass { background: #E8F5E9; color: var(--aec-green); }
+    .score-badge.fail { background: #FFEBEE; color: var(--aec-red); }
+    .score-badge.pending { background: #F5F5F5; color: var(--aec-gray); }
+    .header-right { text-align: right; font-size: 13px; }
+    .kg-name { font-weight: 600; color: var(--aec-blue); }
+    .kg-info { color: var(--aec-gray); margin-top: 2px; }
+    .layer2-status { margin-top: 4px; font-size: 11px; }
+    .layer2-status.on { color: var(--aec-green); }
+    .layer2-status.off { color: var(--aec-gray); }
+
+    .tab-bar {
+      position: fixed;
+      top: 80px;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: var(--aec-white);
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      z-index: 99;
+    }
+    .tab {
+      padding: 12px 20px;
+      font-size: 14px;
+      color: var(--aec-gray);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--aec-blue); }
+    .tab.active {
+      color: var(--aec-blue);
+      border-bottom-color: var(--aec-blue);
+      font-weight: 600;
+    }
+
+    .content {
+      margin-top: 128px;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 24px;
+      min-height: calc(100vh - 128px);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Verify Tab */
+    .verify-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .verify-input textarea {
+      width: 100%;
+      height: 200px;
+      padding: 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+    }
+    .verify-input textarea:focus { outline: 2px solid var(--aec-blue); border-color: transparent; }
+    .demo-buttons { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+    .demo-btn {
+      padding: 8px 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      background: var(--aec-white);
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .demo-btn:hover { background: var(--aec-light); border-color: var(--aec-blue); }
+    .verify-btn {
+      padding: 12px 32px;
+      background: var(--aec-blue);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .verify-btn:hover { background: #1e3040; }
+    .verify-btn:disabled { background: var(--aec-gray); cursor: not-allowed; }
+    .layer2-hint { font-size: 12px; color: var(--aec-gray); margin-top: 12px; }
+
+    .pipeline { display: flex; flex-direction: column; gap: 8px; }
+    .pipeline-stage {
+      background: var(--aec-white);
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px;
+      transition: all 0.4s;
+    }
+    .pipeline-stage.active {
+      border-color: var(--aec-blue);
+      box-shadow: 0 0 20px rgba(46, 64, 87, 0.3);
+    }
+    .pipeline-stage.done { border-color: var(--aec-green); }
+    .pipeline-stage.disabled { opacity: 0.5; }
+    .stage-header { display: flex; justify-content: space-between; align-items: center; }
+    .stage-name { font-weight: 600; color: var(--aec-blue); }
+    .stage-status { font-size: 12px; color: var(--aec-gray); }
+    .stage-desc { font-size: 12px; color: var(--aec-gray); margin-top: 4px; }
+    .pipeline-arrow {
+      text-align: center;
+      color: var(--aec-gray);
+      font-size: 20px;
+    }
+    .stage-explain {
+      margin-top: 8px;
+      padding: 8px;
+      background: var(--aec-light);
+      border-radius: 4px;
+      font-size: 11px;
+      color: #666;
+      display: none;
+    }
+    .pipeline-stage:hover .stage-explain { display: block; }
+
+    /* KG Viewer */
+    .kg-viewer { height: calc(100vh - 220px); position: relative; }
+    #kg-network { width: 100%; height: 100%; border: 1px solid #e0e0e0; border-radius: 8px; background: var(--aec-white); }
+    .kg-legend {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.95);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      font-size: 12px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+    .legend-color { width: 12px; height: 12px; border-radius: 50%; }
+    .kg-controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .kg-filter {
+      padding: 6px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      background: var(--aec-white);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .kg-filter.active { background: var(--aec-blue); color: white; border-color: var(--aec-blue); }
+    .node-panel {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 300px;
+      background: rgba(255,255,255,0.98);
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      display: none;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .node-panel.visible { display: block; }
+    .node-panel h3 { font-size: 14px; margin-bottom: 8px; }
+    .node-type-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .node-patterns { font-family: monospace; font-size: 11px; background: var(--aec-light); padding: 8px; border-radius: 4px; margin-top: 8px; }
+    .pattern-token { display: inline-block; padding: 2px 6px; background: #e0e0e0; border-radius: 3px; margin: 2px; }
+
+    /* Results Tab */
+    .results-empty { text-align: center; padding: 60px; color: var(--aec-gray); }
+    .score-summary {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 24px;
+      background: var(--aec-white);
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+    .score-arc { width: 120px; height: 80px; }
+    .score-stats { font-size: 14px; color: var(--aec-gray); }
+    .statement-list { display: flex; flex-direction: column; gap: 8px; }
+    .statement-row {
+      padding: 16px;
+      background: var(--aec-white);
+      border-radius: 8px;
+      border-left: 4px solid var(--aec-gray);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .statement-row:hover { transform: translateX(4px); }
+    .statement-row.grounded { border-left-color: var(--aec-green); background: #F1F8E9; }
+    .statement-row.ungrounded { border-left-color: var(--aec-red); background: #FFEBEE; }
+    .statement-row.persona { border-left-color: var(--aec-gray); }
+    .statement-text { font-size: 14px; margin-bottom: 8px; }
+    .statement-verdict { font-size: 12px; font-weight: 600; }
+    .statement-verdict.grounded { color: var(--aec-green); }
+    .statement-verdict.ungrounded { color: var(--aec-red); }
+    .statement-verdict.persona { color: var(--aec-gray); }
+    .statement-details { font-size: 12px; color: #666; margin-top: 8px; display: none; }
+    .statement-row.expanded .statement-details { display: block; }
+    .gap-list { margin-top: 24px; }
+    .gap-card {
+      padding: 16px;
+      background: #FFF3E0;
+      border: 1px solid var(--aec-orange);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .gap-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--aec-orange); margin-bottom: 8px; }
+
+    /* Education Tab */
+    .education-demo {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .demo-card {
+      padding: 24px;
+      background: var(--aec-white);
+      border-radius: 8px;
+      text-align: center;
+    }
+    .demo-card.before { border: 2px solid var(--aec-red); }
+    .demo-card.after { border: 2px solid var(--aec-green); }
+    .demo-score { font-size: 48px; font-weight: 600; }
+    .demo-card.before .demo-score { color: var(--aec-red); }
+    .demo-card.after .demo-score { color: var(--aec-green); }
+    .demo-arrow { font-size: 32px; color: var(--aec-blue); }
+    .education-stages { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 32px; }
+    .edu-stage {
+      padding: 16px;
+      background: var(--aec-white);
+      border-radius: 8px;
+      text-align: center;
+      border: 2px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+    .edu-stage.active { border-color: var(--aec-blue); box-shadow: 0 0 15px rgba(46,64,87,0.2); }
+    .edu-stage.done { border-color: var(--aec-green); }
+    .edu-stage-icon { font-size: 24px; margin-bottom: 8px; }
+    .edu-stage-name { font-size: 12px; font-weight: 600; color: var(--aec-blue); }
+    .edu-stage-metric { font-size: 11px; color: var(--aec-gray); margin-top: 4px; }
+    .convergence-chart { background: var(--aec-white); padding: 24px; border-radius: 8px; }
+    .chart-svg { width: 100%; max-width: 600px; height: 200px; }
+
+    /* Settings Tab */
+    .settings-section {
+      background: var(--aec-white);
+      padding: 24px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+    .settings-section h3 { font-size: 16px; font-weight: 600; color: var(--aec-blue); margin-bottom: 16px; }
+    .setting-row { margin-bottom: 16px; }
+    .setting-row label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    .setting-row input, .setting-row select {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .setting-row input:focus, .setting-row select:focus { outline: 2px solid var(--aec-blue); border-color: transparent; }
+    .setting-hint { font-size: 11px; color: var(--aec-gray); margin-top: 4px; }
+    .toggle-row { display: flex; align-items: center; gap: 12px; }
+    .toggle {
+      width: 48px;
+      height: 26px;
+      background: #e0e0e0;
+      border-radius: 13px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .toggle.on { background: var(--aec-green); }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: all 0.3s;
+    }
+    .toggle.on::after { left: 24px; }
+    .slider-row { display: flex; align-items: center; gap: 12px; }
+    .slider-row input[type="range"] { flex: 1; }
+    .slider-value { font-family: monospace; font-size: 14px; min-width: 50px; }
+    .test-btn {
+      padding: 8px 16px;
+      background: var(--aec-blue);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .test-result { font-size: 12px; margin-top: 8px; }
+    .test-result.success { color: var(--aec-green); }
+    .test-result.error { color: var(--aec-red); }
+
+    /* KG Selector */
+    .kg-selector {
+      position: absolute;
+      top: 20px;
+      right: 200px;
+    }
+    .kg-selector select {
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 13px;
+      background: white;
+    }
+
+    /* Animation classes */
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(46, 64, 87, 0.4); }
+      50% { box-shadow: 0 0 20px 5px rgba(46, 64, 87, 0.4); }
+    }
+    .pulsing { animation: pulse 0.4s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+
+    /* Export buttons */
+    .export-bar { margin-top: 16px; display: flex; gap: 8px; }
+    .export-btn {
+      padding: 6px 12px;
+      background: var(--aec-light);
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .export-btn:hover { background: #e8e8e8; }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .verify-layout { grid-template-columns: 1fr; }
+      .education-demo { grid-template-columns: 1fr; }
+      .education-stages { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="wordmark">aether-aec</div>
+      <div class="subtitle">Agent Education Calibration</div>
+    </div>
+    <div class="kg-selector">
+      <select id="kg-select" onchange="switchKG(this.value)">
+        <option value="frontend-design">Frontend Design (73 nodes)</option>
+        <option value="jefferson">Thomas Jefferson (51 nodes)</option>
+        <option value="ceo">CEO Executive Advisor (60 nodes)</option>
+        <option value="domain-sap-cap">SAP CAP Domain (15 nodes)</option>
+      </select>
+    </div>
+    <div class="header-center">
+      <div class="score-gauge">
+        <svg viewBox="0 0 100 60" id="score-arc">
+          <path d="M 10 55 A 40 40 0 0 1 90 55" fill="none" stroke="#e0e0e0" stroke-width="8" stroke-linecap="round"/>
+          <path id="score-arc-fill" d="M 10 55 A 40 40 0 0 1 90 55" fill="none" stroke="var(--aec-blue)" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 126"/>
+          <line x1="50" y1="55" x2="50" y2="25" stroke="var(--aec-orange)" stroke-width="2" stroke-dasharray="3 2" id="threshold-line" transform="rotate(-54 50 55)"/>
+        </svg>
+      </div>
+      <div class="score-number" id="score-display">—</div>
+      <div class="score-badge pending" id="score-badge">READY</div>
+    </div>
+    <div class="header-right">
+      <div class="kg-name" id="kg-name-display">Frontend Design</div>
+      <div class="kg-info" id="kg-info-display">73 nodes · Skill Agent</div>
+      <div class="layer2-status off" id="layer2-status">Layer 2: OFF</div>
+    </div>
+  </header>
+
+  <nav class="tab-bar">
+    <div class="tab active" data-tab="verify">Verify</div>
+    <div class="tab" data-tab="kg-viewer">KG Viewer</div>
+    <div class="tab" data-tab="results">Results</div>
+    <div class="tab" data-tab="education">Education</div>
+    <div class="tab" data-tab="settings">Settings</div>
+  </nav>
+
+  <main class="content">
+    <!-- VERIFY TAB -->
+    <div class="tab-content active" id="tab-verify">
+      <div class="verify-layout">
+        <div class="verify-input">
+          <textarea id="verify-text" placeholder="Enter text to verify against the knowledge graph...
+
+Try: 'Use Inter for body text' with the frontend-design KG"></textarea>
+          <div class="demo-buttons">
+            <button class="demo-btn" onclick="loadDemo('jefferson')">Jefferson Facts</button>
+            <button class="demo-btn" onclick="loadDemo('good-typography')">Good Typography</button>
+            <button class="demo-btn" onclick="loadDemo('bad-typography')">Bad Typography</button>
+          </div>
+          <button class="verify-btn" id="verify-btn" onclick="runVerification()">Verify Now</button>
+          <div class="layer2-hint">Layer 2 LLM verification: <span id="layer2-hint-status">OFF</span> · <a href="#" onclick="switchTab('settings'); return false;">Configure in Settings</a></div>
+        </div>
+        <div class="pipeline">
+          <div class="pipeline-stage" id="stage-l0">
+            <div class="stage-header">
+              <span class="stage-name">L0 Factual Extraction</span>
+              <span class="stage-status" id="l0-status">—</span>
+            </div>
+            <div class="stage-desc">Numbers · Dates · Entities</div>
+            <div class="stage-explain">Extracts numbers, dates, named entities and matches against KG factual nodes</div>
+          </div>
+          <div class="pipeline-arrow"></div>
+          <div class="pipeline-stage" id="stage-l1">
+            <div class="stage-header">
+              <span class="stage-name">L1 Compiled Patterns</span>
+              <span class="stage-status" id="l1-status">—</span>
+            </div>
+            <div class="stage-desc">Rules · Techniques · AntiPatterns</div>
+            <div class="stage-explain">Tokenizes each sentence and computes coverage against compiled pattern detectors</div>
+          </div>
+          <div class="pipeline-arrow"></div>
+          <div class="pipeline-stage disabled" id="stage-l2">
+            <div class="stage-header">
+              <span class="stage-name">L2 Type-Driven LLM</span>
+              <span class="stage-status" id="l2-status">disabled</span>
+            </div>
+            <div class="stage-desc">Ambiguous cases only</div>
+            <div class="stage-explain">For ambiguous matches, asks the LLM: does this statement FOLLOW or VIOLATE the rule?</div>
+          </div>
+          <div class="pipeline-arrow"></div>
+          <div class="pipeline-stage" id="stage-l3">
+            <div class="stage-header">
+              <span class="stage-name">L3 Edge Policy Traverse</span>
+              <span class="stage-status" id="l3-status">—</span>
+            </div>
+            <div class="stage-desc">avoids · requires · contradicts</div>
+            <div class="stage-explain">Traverses edge policies — if typography is mentioned, checks avoids:overused_fonts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KG VIEWER TAB -->
+    <div class="tab-content" id="tab-kg-viewer">
+      <div class="kg-viewer">
+        <div id="kg-network"></div>
+        <div class="kg-legend">
+          <div class="legend-item"><div class="legend-color" style="background: var(--node-rule)"></div>Rule <span id="legend-rule-count">0</span></div>
+          <div class="legend-item"><div class="legend-color" style="background: var(--node-antipattern)"></div>AntiPattern <span id="legend-ap-count">0</span></div>
+          <div class="legend-item"><div class="legend-color" style="background: var(--node-technique)"></div>Technique <span id="legend-tech-count">0</span></div>
+          <div class="legend-item"><div class="legend-color" style="background: var(--node-concept)"></div>Concept <span id="legend-concept-count">0</span></div>
+          <div class="legend-item"><div class="legend-color" style="background: var(--node-tool)"></div>Tool <span id="legend-tool-count">0</span></div>
+          <div class="legend-item"><div class="legend-color" style="background: var(--node-trait)"></div>Trait <span id="legend-trait-count">0</span></div>
+        </div>
+        <div class="node-panel" id="node-panel">
+          <h3 id="node-panel-title">Node Details</h3>
+          <div class="node-type-badge" id="node-panel-type">Type</div>
+          <div id="node-panel-label"></div>
+          <div id="node-panel-threshold"></div>
+          <div class="node-patterns" id="node-panel-patterns"></div>
+          <div id="node-panel-edges" style="margin-top: 8px; font-size: 12px;"></div>
+        </div>
+      </div>
+      <div class="kg-controls">
+        <button class="kg-filter active" data-filter="all">All</button>
+        <button class="kg-filter" data-filter="Rule">Rule</button>
+        <button class="kg-filter" data-filter="AntiPattern">AntiPattern</button>
+        <button class="kg-filter" data-filter="Technique">Technique</button>
+        <button class="kg-filter" data-filter="Concept">Concept</button>
+        <button class="kg-filter" data-filter="Tool">Tool</button>
+        <button class="kg-filter" data-filter="Trait">Trait</button>
+        <button class="kg-filter" onclick="fitNetwork()">Fit All</button>
+      </div>
+      <div class="export-bar">
+        <button class="export-btn" onclick="exportKGImage()">Export KG as PNG</button>
+      </div>
+    </div>
+
+    <!-- RESULTS TAB -->
+    <div class="tab-content" id="tab-results">
+      <div class="results-empty" id="results-empty">
+        Run a verification in the Verify tab to see results here.
+      </div>
+      <div id="results-content" style="display: none;">
+        <div class="score-summary">
+          <svg class="score-arc" viewBox="0 0 120 80" id="results-score-arc">
+            <path d="M 10 70 A 50 50 0 0 1 110 70" fill="none" stroke="#e0e0e0" stroke-width="10" stroke-linecap="round"/>
+            <path id="results-arc-fill" d="M 10 70 A 50 50 0 0 1 110 70" fill="none" stroke="var(--aec-blue)" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 157"/>
+          </svg>
+          <div>
+            <div class="score-number" id="results-score">0.000</div>
+            <div class="score-badge pending" id="results-badge">—</div>
+          </div>
+          <div class="score-stats" id="results-stats"></div>
+        </div>
+        <div class="statement-list" id="statement-list"></div>
+        <div class="gap-list" id="gap-list"></div>
+        <div class="export-bar">
+          <button class="export-btn" onclick="exportGapsJSON()">Export Gap List as JSON</button>
+          <button class="export-btn" onclick="exportScoreSVG()">Export Score Gauge SVG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDUCATION TAB -->
+    <div class="tab-content" id="tab-education">
+      <h2 style="margin-bottom: 16px; color: var(--aec-blue);">Self-Education Loop Demo</h2>
+      <p style="color: var(--aec-gray); margin-bottom: 24px;">Jefferson scholar agent — Louisiana Purchase query</p>
+      <div class="education-demo">
+        <div class="demo-card before">
+          <div style="font-size: 12px; color: var(--aec-red); margin-bottom: 8px;">BEFORE</div>
+          <div class="demo-score">0.143</div>
+          <div class="score-badge fail">FAIL</div>
+          <div style="margin-top: 12px; font-size: 13px; color: #666;">
+            Grounded: 1<br>Ungrounded: 8<br>KG: 51 nodes
+          </div>
+        </div>
+        <div class="demo-arrow"></div>
+        <div class="demo-card after">
+          <div style="font-size: 12px; color: var(--aec-green); margin-bottom: 8px;">AFTER</div>
+          <div class="demo-score">0.889</div>
+          <div class="score-badge pass">PASS</div>
+          <div style="margin-top: 12px; font-size: 13px; color: #666;">
+            Grounded: 8<br>Ungrounded: 1<br>KG: 68 nodes
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-bottom: 24px; color: var(--aec-gray); font-size: 14px;">
+        17 triples acquired · 0 human interventions · Cycle 1 of 5
+      </div>
+      <button class="verify-btn" onclick="animateEducation()" style="display: block; margin: 0 auto 32px;">Animate Education Cycle</button>
+
+      <div class="education-stages">
+        <div class="edu-stage" id="edu-stage-1">
+          <div class="edu-stage-icon"></div>
+          <div class="edu-stage-name">QUEUE</div>
+          <div class="edu-stage-metric">8 gaps</div>
+        </div>
+        <div class="edu-stage" id="edu-stage-2">
+          <div class="edu-stage-icon"></div>
+          <div class="edu-stage-name">RESEARCH</div>
+          <div class="edu-stage-metric">22 triples</div>
+        </div>
+        <div class="edu-stage" id="edu-stage-3">
+          <div class="edu-stage-icon"></div>
+          <div class="edu-stage-name">PARSE</div>
+          <div class="edu-stage-metric">22 parsed</div>
+        </div>
+        <div class="edu-stage" id="edu-stage-4">
+          <div class="edu-stage-icon"></div>
+          <div class="edu-stage-name">VALIDATE</div>
+          <div class="edu-stage-metric">19 passed</div>
+        </div>
+        <div class="edu-stage" id="edu-stage-5">
+          <div class="edu-stage-icon"></div>
+          <div class="edu-stage-name">CONTRADICT</div>
+          <div class="edu-stage-metric">0 conflicts</div>
+        </div>
+        <div class="edu-stage" id="edu-stage-6">
+          <div class="edu-stage-icon"></div>
+          <div class="edu-stage-name">INTEGRATE</div>
+          <div class="edu-stage-metric">+17 nodes</div>
+        </div>
+      </div>
+
+      <div class="convergence-chart">
+        <h3 style="margin-bottom: 16px; color: var(--aec-blue);">Convergence Chart</h3>
+        <svg class="chart-svg" viewBox="0 0 600 200">
+          <!-- Grid lines -->
+          <line x1="50" y1="20" x2="50" y2="170" stroke="#e0e0e0"/>
+          <line x1="50" y1="170" x2="580" y2="170" stroke="#e0e0e0"/>
+          <!-- Threshold line at 0.80 -->
+          <line x1="50" y1="50" x2="580" y2="50" stroke="var(--aec-orange)" stroke-width="2" stroke-dasharray="5 3"/>
+          <text x="585" y="54" font-size="10" fill="var(--aec-orange)">0.80</text>
+          <!-- Y axis labels -->
+          <text x="40" y="25" font-size="10" fill="#666" text-anchor="end">1.0</text>
+          <text x="40" y="95" font-size="10" fill="#666" text-anchor="end">0.5</text>
+          <text x="40" y="175" font-size="10" fill="#666" text-anchor="end">0.0</text>
+          <!-- X axis labels -->
+          <text x="50" y="190" font-size="10" fill="#666" text-anchor="middle">0</text>
+          <text x="156" y="190" font-size="10" fill="#666" text-anchor="middle">1</text>
+          <text x="262" y="190" font-size="10" fill="#666" text-anchor="middle">2</text>
+          <text x="368" y="190" font-size="10" fill="#666" text-anchor="middle">3</text>
+          <text x="474" y="190" font-size="10" fill="#666" text-anchor="middle">4</text>
+          <text x="580" y="190" font-size="10" fill="#666" text-anchor="middle">5</text>
+          <!-- Data line: [0.143, 0.889, 0.889, 0.889, 0.889, 0.889] -->
+          <polyline points="50,148.6 156,36.7 262,36.7 368,36.7 474,36.7 580,36.7" fill="none" stroke="var(--aec-blue)" stroke-width="3"/>
+          <!-- Data points -->
+          <circle cx="50" cy="148.6" r="5" fill="var(--aec-red)"/>
+          <circle cx="156" cy="36.7" r="5" fill="var(--aec-green)"/>
+          <circle cx="262" cy="36.7" r="5" fill="var(--aec-green)"/>
+          <circle cx="368" cy="36.7" r="5" fill="var(--aec-green)"/>
+          <circle cx="474" cy="36.7" r="5" fill="var(--aec-green)"/>
+          <circle cx="580" cy="36.7" r="5" fill="var(--aec-green)"/>
+        </svg>
+        <div style="text-align: center; margin-top: 12px; color: var(--aec-gray); font-size: 13px;">
+          Saturation at Cycle 1 · Zero degradation
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div class="tab-content" id="tab-settings">
+      <div class="settings-section">
+        <h3>LLM Configuration</h3>
+        <div class="setting-row">
+          <label>Provider</label>
+          <select id="llm-provider">
+            <option value="anthropic">Anthropic</option>
+            <option value="openai">OpenAI</option>
+            <option value="custom">Custom Endpoint</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <label>API Key</label>
+          <input type="password" id="api-key" placeholder="sk-...">
+          <div class="setting-hint">Stored in browser session only. Never sent to any server except your LLM provider.</div>
+        </div>
+        <div class="setting-row">
+          <label>Model</label>
+          <input type="text" id="llm-model" value="claude-sonnet-4-6">
+        </div>
+        <div class="setting-row" id="custom-endpoint-row" style="display: none;">
+          <label>Custom Endpoint URL</label>
+          <input type="text" id="custom-endpoint" placeholder="https://your-endpoint/v1/messages">
+        </div>
+        <button class="test-btn" onclick="testConnection()">Test Connection</button>
+        <div class="test-result" id="test-result"></div>
+      </div>
+
+      <div class="settings-section">
+        <h3>Layer 2 LLM Verification</h3>
+        <div class="toggle-row">
+          <div class="toggle" id="layer2-toggle" onclick="toggleLayer2()"></div>
+          <span id="layer2-toggle-label">OFF</span>
+        </div>
+        <div class="setting-hint" style="margin-top: 8px;">
+          When ON: ambiguous statements are sent to the LLM for type-driven verification.
+          Max 3 calls per response. When OFF: AEC runs as fully deterministic verifier.
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>AEC Thresholds</h3>
+        <div class="setting-row">
+          <label>Main Threshold</label>
+          <div class="slider-row">
+            <input type="range" id="threshold-main" min="0.50" max="0.99" step="0.01" value="0.80" oninput="updateSliderDisplay(this, 'threshold-main-val')">
+            <span class="slider-value" id="threshold-main-val">0.80</span>
+          </div>
+        </div>
+        <div class="setting-row">
+          <label>Layer 2 Trigger</label>
+          <div class="slider-row">
+            <input type="range" id="threshold-l2" min="0.25" max="0.50" step="0.01" value="0.40" oninput="updateSliderDisplay(this, 'threshold-l2-val')">
+            <span class="slider-value" id="threshold-l2-val">0.40</span>
+          </div>
+          <div class="setting-hint">Statements with coverage between L2 trigger and threshold are sent to Layer 2</div>
+        </div>
+        <div class="setting-row">
+          <label>Education Threshold</label>
+          <div class="slider-row">
+            <input type="range" id="threshold-edu" min="0.40" max="0.70" step="0.01" value="0.50" oninput="updateSliderDisplay(this, 'threshold-edu-val')">
+            <span class="slider-value" id="threshold-edu-val">0.50</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>About</h3>
+        <p style="color: #666; font-size: 14px; line-height: 1.6;">
+          <strong>aether-aec v1.0.0</strong><br>
+          Agent Education Calibration — Compiled Runtime Verification<br><br>
+          Paper: <a href="https://doi.org/10.5281/zenodo.19212829" target="_blank">DOI 10.5281/zenodo.19212829</a><br>
+          GitHub: <a href="https://github.com/jeff0926/aether-aec" target="_blank">github.com/jeff0926/aether-aec</a><br>
+          Part of: <a href="https://github.com/jeff0926/aether" target="_blank">AETHER Framework</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+<script>
+// ============================================================
+// EMBEDDED KNOWLEDGE GRAPHS (from actual kg.jsonld files)
+// ============================================================
+
+const KG_EXAMPLES = {
+  "frontend-design": {
+    label: "Frontend Design",
+    type: "Skill Agent",
+    nodes: [
+      {"@id":"persona:aesthetic_architect","@type":"skill:Trait","rdfs:label":"Aesthetic Architect","skill:avoids":["antipattern:generic_ai_aesthetics","antipattern:conservative_design"]},
+      {"@id":"trait:bold_creative","@type":"skill:Trait","rdfs:label":"Bold Creative"},
+      {"@id":"trait:visionary_technical","@type":"skill:Trait","rdfs:label":"Visionary Technical"},
+      {"@id":"trait:perfectionist","@type":"skill:Trait","rdfs:label":"Perfectionist"},
+      {"@id":"trait:opinionated","@type":"skill:Trait","rdfs:label":"Opinionated"},
+      {"@id":"concept:aesthetic_vision","@type":"skill:Concept","rdfs:label":"Aesthetic Vision","skill:avoids":"antipattern:generic_ai_aesthetics"},
+      {"@id":"concept:distinctiveness","@type":"skill:Concept","rdfs:label":"Distinctiveness","skill:contradicts":"antipattern:cookie_cutter_design"},
+      {"@id":"concept:production_grade","@type":"skill:Concept","rdfs:label":"Production Grade"},
+      {"@id":"concept:design_thinking","@type":"skill:Concept","rdfs:label":"Design Thinking"},
+      {"@id":"concept:typography","@type":"skill:Concept","rdfs:label":"Typography","skill:avoids":"antipattern:generic_fonts"},
+      {"@id":"concept:color_theme","@type":"skill:Concept","rdfs:label":"Color & Theme"},
+      {"@id":"concept:motion","@type":"skill:Concept","rdfs:label":"Motion"},
+      {"@id":"concept:spatial_composition","@type":"skill:Concept","rdfs:label":"Spatial Composition"},
+      {"@id":"concept:backgrounds_visual_details","@type":"skill:Concept","rdfs:label":"Backgrounds & Visual Details","skill:avoids":"antipattern:solid_color_defaults"},
+      {"@id":"rule:commit_to_bold_aesthetic","@type":"skill:Rule","rdfs:label":"Choose a clear conceptual direction and commit to a BOLD aesthetic"},
+      {"@id":"rule:choose_beautiful_unique_fonts","@type":"skill:Rule","rdfs:label":"Choose fonts that are beautiful, unique, and interesting"},
+      {"@id":"rule:avoid_generic_fonts","@type":"skill:Rule","rdfs:label":"Avoid generic fonts like Arial and Inter"},
+      {"@id":"rule:use_distinctive_font_choices","@type":"skill:Rule","rdfs:label":"Use unexpected, characterful font choices that elevate aesthetics"},
+      {"@id":"rule:pair_display_and_body_fonts","@type":"skill:Rule","rdfs:label":"Pair a distinctive display font with a refined body font"},
+      {"@id":"rule:commit_to_cohesive_aesthetic","@type":"skill:Rule","rdfs:label":"Commit to a cohesive aesthetic"},
+      {"@id":"rule:use_css_variables","@type":"skill:Rule","rdfs:label":"Use CSS variables for consistency"},
+      {"@id":"rule:dominant_colors_with_sharp_accents","@type":"skill:Rule","rdfs:label":"Dominant colors with sharp accents outperform timid, evenly-distributed palettes"},
+      {"@id":"rule:use_animations_for_effects","@type":"skill:Rule","rdfs:label":"Use animations for effects and micro-interactions"},
+      {"@id":"rule:prioritize_css_only_solutions","@type":"skill:Rule","rdfs:label":"Prioritize CSS-only solutions for HTML"},
+      {"@id":"rule:focus_on_high_impact_moments","@type":"skill:Rule","rdfs:label":"Focus on high-impact moments: one well-orchestrated page load creates more delight than scattered micro-interactions"},
+      {"@id":"rule:create_atmosphere_and_depth","@type":"skill:Rule","rdfs:label":"Create atmosphere and depth rather than defaulting to solid colors"},
+      {"@id":"rule:add_contextual_effects","@type":"skill:Rule","rdfs:label":"Add contextual effects and textures that match the overall aesthetic"},
+      {"@id":"rule:make_unforgettable_interfaces","@type":"skill:Rule","rdfs:label":"What makes this UNFORGETTABLE? What's the one thing someone will remember?"},
+      {"@id":"rule:implement_functional_code","@type":"skill:Rule","rdfs:label":"Implement working code that is production-grade and functional"},
+      {"@id":"rule:match_complexity_to_vision","@type":"skill:Rule","rdfs:label":"Match implementation complexity to the aesthetic vision"},
+      {"@id":"rule:meticulous_detail_refinement","@type":"skill:Rule","rdfs:label":"Meticulously refined in every detail"},
+      {"@id":"rule:avoid_generic_choices","@type":"skill:Rule","rdfs:label":"NEVER converge on common choices across generations"},
+      {"@id":"rule:make_unexpected_choices","@type":"skill:Rule","rdfs:label":"Interpret creatively and make unexpected choices that feel genuinely designed for the context"},
+      {"@id":"rule:understand_context_before_coding","@type":"skill:Rule","rdfs:label":"Before coding, understand the context and commit to a BOLD aesthetic direction"},
+      {"@id":"rule:choose_clear_conceptual_direction","@type":"skill:Rule","rdfs:label":"Choose a clear conceptual direction and execute it with precision"},
+      {"@id":"rule:execute_with_precision","@type":"skill:Rule","rdfs:label":"Bold maximalism and refined minimalism both work - the key is intentionality, not intensity"},
+      {"@id":"antipattern:generic_ai_aesthetics","@type":"skill:AntiPattern","rdfs:label":"Generic AI-generated aesthetics"},
+      {"@id":"antipattern:generic_fonts","@type":"skill:AntiPattern","rdfs:label":"Overused font families (Inter, Roboto, Arial, system fonts)"},
+      {"@id":"antipattern:cliched_color_schemes","@type":"skill:AntiPattern","rdfs:label":"Cliched color schemes (particularly purple gradients on white backgrounds)"},
+      {"@id":"antipattern:predictable_layouts","@type":"skill:AntiPattern","rdfs:label":"Predictable layouts and component patterns"},
+      {"@id":"antipattern:cookie_cutter_design","@type":"skill:AntiPattern","rdfs:label":"Cookie-cutter design that lacks context-specific character"},
+      {"@id":"antipattern:solid_color_defaults","@type":"skill:AntiPattern","rdfs:label":"Defaulting to solid colors instead of creating atmosphere"},
+      {"@id":"technique:extreme_tone_selection","@type":"skill:Technique","rdfs:label":"Pick an extreme tone: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, etc."},
+      {"@id":"technique:production_grade_implementation","@type":"skill:Technique","rdfs:label":"Implement working code (HTML/CSS/JS, React, Vue, etc.)"},
+      {"@id":"technique:pixel_perfect_execution","@type":"skill:Technique","rdfs:label":"Pixel-perfect attention to detail and execution"},
+      {"@id":"technique:css_variable_consistency","@type":"skill:Technique","rdfs:label":"Use CSS variables for consistency"},
+      {"@id":"technique:staggered_reveals","@type":"skill:Technique","rdfs:label":"Staggered reveals using animation-delay"},
+      {"@id":"technique:scroll_triggering","@type":"skill:Technique","rdfs:label":"Scroll-triggering animations"},
+      {"@id":"technique:surprising_hover_states","@type":"skill:Technique","rdfs:label":"Hover states that surprise"},
+      {"@id":"technique:unexpected_layouts","@type":"skill:Technique","rdfs:label":"Unexpected layouts"},
+      {"@id":"technique:asymmetry","@type":"skill:Technique","rdfs:label":"Asymmetry"},
+      {"@id":"technique:overlap","@type":"skill:Technique","rdfs:label":"Overlap"},
+      {"@id":"technique:diagonal_flow","@type":"skill:Technique","rdfs:label":"Diagonal flow"},
+      {"@id":"technique:grid_breaking_elements","@type":"skill:Technique","rdfs:label":"Grid-breaking elements"},
+      {"@id":"technique:generous_negative_space","@type":"skill:Technique","rdfs:label":"Generous negative space"},
+      {"@id":"technique:controlled_density","@type":"skill:Technique","rdfs:label":"Controlled density"},
+      {"@id":"technique:gradient_meshes","@type":"skill:Technique","rdfs:label":"Gradient meshes"},
+      {"@id":"technique:noise_textures","@type":"skill:Technique","rdfs:label":"Noise textures"},
+      {"@id":"technique:geometric_patterns","@type":"skill:Technique","rdfs:label":"Geometric patterns"},
+      {"@id":"technique:layered_transparencies","@type":"skill:Technique","rdfs:label":"Layered transparencies"},
+      {"@id":"technique:dramatic_shadows","@type":"skill:Technique","rdfs:label":"Dramatic shadows"},
+      {"@id":"technique:decorative_borders","@type":"skill:Technique","rdfs:label":"Decorative borders"},
+      {"@id":"technique:custom_cursors","@type":"skill:Technique","rdfs:label":"Custom cursors"},
+      {"@id":"technique:grain_overlays","@type":"skill:Technique","rdfs:label":"Grain overlays"},
+      {"@id":"tool:motion_library","@type":"skill:Tool","rdfs:label":"Motion library for React"},
+      {"@id":"tool:react","@type":"skill:Tool","rdfs:label":"React"},
+      {"@id":"tool:vue","@type":"skill:Tool","rdfs:label":"Vue"},
+      {"@id":"tool:html_css_js","@type":"skill:Tool","rdfs:label":"HTML/CSS/JS"},
+      {"@id":"concept:intentionality","@type":"skill:Concept","rdfs:label":"Intentionality"},
+      {"@id":"concept:purpose","@type":"skill:Concept","rdfs:label":"Purpose - What problem does this interface solve? Who uses it?"},
+      {"@id":"concept:tone","@type":"skill:Concept","rdfs:label":"Tone"},
+      {"@id":"concept:constraints","@type":"skill:Concept","rdfs:label":"Technical Constraints (framework, performance, accessibility)"},
+      {"@id":"concept:differentiation","@type":"skill:Concept","rdfs:label":"Differentiation"}
+    ]
+  },
+  "jefferson": {
+    label: "Thomas Jefferson",
+    type: "Scholar Agent",
+    nodes: [
+      {"@id":"person:thomas_jefferson","@type":"Person","rdfs:label":"Thomas Jefferson","birth_date":"1743-04-13","birth_year":1743,"death_year":1826,"birth_place":"Shadwell, Albemarle County, Virginia"},
+      {"@id":"work:declaration_of_independence","@type":"Work","rdfs:label":"Declaration of Independence","year":1776,"author":"Thomas Jefferson","signatories":56},
+      {"@id":"work:notes_on_virginia","@type":"Work","rdfs:label":"Notes on the State of Virginia","year":1785,"author":"Thomas Jefferson"},
+      {"@id":"work:summary_view","@type":"Work","rdfs:label":"A Summary View of the Rights of British America","year":1774,"author":"Thomas Jefferson"},
+      {"@id":"work:virginia_statute_religious_freedom","@type":"Work","rdfs:label":"Virginia Statute for Religious Freedom","year":1786,"author":"Thomas Jefferson"},
+      {"@id":"person:john_adams","@type":"Person","rdfs:label":"John Adams","role":"Committee of Five member"},
+      {"@id":"person:benjamin_franklin","@type":"Person","rdfs:label":"Benjamin Franklin","role":"Committee of Five member"},
+      {"@id":"person:john_locke","@type":"Person","rdfs:label":"John Locke"},
+      {"@id":"person:george_mason","@type":"Person","rdfs:label":"George Mason"},
+      {"@id":"person:james_madison","@type":"Person","rdfs:label":"James Madison"},
+      {"@id":"person:james_monroe","@type":"Person","rdfs:label":"James Monroe"},
+      {"@id":"person:sally_hemings","@type":"Person","rdfs:label":"Sally Hemings"},
+      {"@id":"person:martha_wayles_skelton","@type":"Person","rdfs:label":"Martha Wayles Skelton"},
+      {"@id":"location:monticello","@type":"Location","rdfs:label":"Monticello"},
+      {"@id":"location:france","@type":"Location","rdfs:label":"France"},
+      {"@id":"location:paris","@type":"Location","rdfs:label":"Paris"},
+      {"@id":"location:virginia","@type":"Location","rdfs:label":"Virginia"},
+      {"@id":"location:philadelphia","@type":"Location","rdfs:label":"Philadelphia"},
+      {"@id":"org:university_of_virginia","@type":"Organization","rdfs:label":"University of Virginia","founded_year":1819,"founder":"Thomas Jefferson"},
+      {"@id":"org:college_william_mary","@type":"Organization","rdfs:label":"College of William and Mary"},
+      {"@id":"event:american_revolution","@type":"Event","rdfs:label":"American Revolution","period":"1775-1783"},
+      {"@id":"event:french_revolution","@type":"Event","rdfs:label":"French Revolution","start_year":1789},
+      {"@id":"event:louisiana_purchase","@type":"Event","rdfs:label":"Louisiana Purchase","year":1803,"cost":"15 million dollars"},
+      {"@id":"concept:natural_rights","@type":"Concept","rdfs:label":"Natural Rights"},
+      {"@id":"concept:agrarianism","@type":"Concept","rdfs:label":"Agrarianism"},
+      {"@id":"concept:separation_church_state","@type":"Concept","rdfs:label":"Separation of Church and State"},
+      {"@id":"role:president","@type":"Role","rdfs:label":"President of the United States","ordinal":"3rd","term_start":1801,"term_end":1809},
+      {"@id":"role:minister_france","@type":"Role","rdfs:label":"Minister to France","term_start":1785,"term_end":1789},
+      {"@id":"role:secretary_state","@type":"Role","rdfs:label":"Secretary of State","term_start":1790,"term_end":1793},
+      {"@id":"role:vice_president","@type":"Role","rdfs:label":"Vice President","term_start":1797,"term_end":1801},
+      {"@id":"role:governor_virginia","@type":"Role","rdfs:label":"Governor of Virginia","term_start":1779,"term_end":1781}
+    ]
+  },
+  "ceo": {
+    label: "CEO Executive Advisor",
+    type: "Executive Advisor",
+    nodes: [
+      {"@id":"concept:strategic_vision","@type":"aether:Concept","rdfs:label":"Strategic Vision"},
+      {"@id":"concept:company_strategy","@type":"aether:Concept","rdfs:label":"Company Strategy"},
+      {"@id":"concept:leadership_direction","@type":"aether:Concept","rdfs:label":"Leadership Direction"},
+      {"@id":"concept:organizational_priorities","@type":"aether:Concept","rdfs:label":"Organizational Priorities"},
+      {"@id":"concept:business_direction","@type":"aether:Concept","rdfs:label":"Business Direction"},
+      {"@id":"rule:flat_hierarchy_60_reports","@type":"skill:Rule","rdfs:label":"Maintain radically flat org with up to 60 direct reports","skill:avoids":"antipattern:management_filters"},
+      {"@id":"rule:no_routine_one_on_ones","@type":"skill:Rule","rdfs:label":"Prohibit private 1:1 meetings for routine status"},
+      {"@id":"rule:group_context_updates","@type":"skill:Rule","rdfs:label":"Conduct all updates in shared-context group settings"},
+      {"@id":"rule:engineers_present_to_ceo","@type":"skill:Rule","rdfs:label":"Mid-level engineers present directly to CEO"},
+      {"@id":"antipattern:information_sanitization","@type":"skill:AntiPattern","rdfs:label":"Filtering/beautifying failures through management layers"},
+      {"@id":"antipattern:complacency_from_dominance","@type":"skill:AntiPattern","rdfs:label":"Allowing market success to diminish R&D urgency"},
+      {"@id":"technique:flywheel_market","@type":"skill:Technique","rdfs:label":"Use accessible markets (gaming) to fund long-term R&D"},
+      {"@id":"technique:self_healing_pivot","@type":"skill:Technique","rdfs:label":"Abandon failed bets and aggressively re-allocate to survival vector"},
+      {"@id":"concept:perpetual_existentialism","@type":"skill:Concept","rdfs:label":"Operating as if 30 days from failure at all times"},
+      {"@id":"rule:30_days_from_failure","@type":"skill:Rule","rdfs:label":"NVIDIA motto: operating on the brink of obsolescence"},
+      {"@id":"rule:code_red_response","@type":"skill:Rule","rdfs:label":"Immediate internal mobilization when competitive threat emerges"},
+      {"@id":"rule:products_over_papers","@type":"skill:Rule","rdfs:label":"Products create durable advantage, not research publications"},
+      {"@id":"rule:ethical_red_lines","@type":"skill:Rule","rdfs:label":"Embed safety principles into binding contracts"},
+      {"@id":"antipattern:bolt_on_ai","@type":"skill:AntiPattern","rdfs:label":"Treating AI as add-on tool rather than integrated workflow"},
+      {"@id":"technique:competitive_paranoia","@type":"skill:Technique","rdfs:label":"Scale infrastructure ahead of demand"},
+      {"@id":"technique:sticky_personalization","@type":"skill:Technique","rdfs:label":"Build personalization that prevents switching"},
+      {"@id":"concept:act_two_reasoning","@type":"skill:Concept","rdfs:label":"Shift from knowledge generation to thought-driven reasoning"},
+      {"@id":"rule:zero_marketing_budget","@type":"skill:Rule","rdfs:label":"Achieve growth through product virality, not spend"},
+      {"@id":"rule:daily_arr_tracking","@type":"skill:Rule","rdfs:label":"Monitor revenue as real-time operational health signal"},
+      {"@id":"antipattern:premature_scaling","@type":"skill:AntiPattern","rdfs:label":"Scaling before strong retention is proven"},
+      {"@id":"technique:vibe_coding","@type":"skill:Technique","rdfs:label":"Founder as orchestrator of intent while AI handles code syntax"},
+      {"@id":"technique:adhd_as_superpower","@type":"skill:Technique","rdfs:label":"Hyperfocus sessions of 10-14 hours on single problems"},
+      {"@id":"concept:magic_moment","@type":"skill:Concept","rdfs:label":"Non-technical users deploying value in under 60 seconds"},
+      {"@id":"concept:five_hundred_day_exit","@type":"skill:Concept","rdfs:label":"Compress entire startup lifecycle into months"},
+      {"@id":"rule:empty_chair_customer","@type":"skill:Rule","rdfs:label":"Every meeting includes representation of the customer"},
+      {"@id":"rule:two_pizza_teams","@type":"skill:Rule","rdfs:label":"Teams small enough to be fed by two pizzas"},
+      {"@id":"rule:type_1_vs_type_2","@type":"skill:Rule","rdfs:label":"Distinguish irreversible (Type 1) from reversible (Type 2) decisions","skill:contradicts":"antipattern:day_two_thinking"},
+      {"@id":"antipattern:day_two_thinking","@type":"skill:AntiPattern","rdfs:label":"Stasis, irrelevance, decline from losing Day 1 urgency"},
+      {"@id":"technique:working_backwards","@type":"skill:Technique","rdfs:label":"Start from customer press release, work backward to requirements"},
+      {"@id":"rule:signal_to_noise","@type":"skill:Rule","rdfs:label":"Ruthlessly eliminate noise; focus on 3 things from 100"},
+      {"@id":"rule:hundred_to_three","@type":"skill:Rule","rdfs:label":"Cut product line from hundreds to three focused bets"},
+      {"@id":"antipattern:feature_bloat","@type":"skill:AntiPattern","rdfs:label":"Adding features without killing equal complexity"},
+      {"@id":"technique:dri_accountability","@type":"skill:Technique","rdfs:label":"Single Directly Responsible Individual per initiative"},
+      {"@id":"antipattern:management_filters","@type":"skill:AntiPattern","rdfs:label":"Sanitizing technical status reports for executives"},
+      {"@id":"rule:growth_mindset_mandate","@type":"skill:Rule","rdfs:label":"Organization must be learn-it-all, not know-it-all"},
+      {"@id":"antipattern:know_it_all_culture","@type":"skill:AntiPattern","rdfs:label":"Fixed mindset that resists learning and adaptation"},
+      {"@id":"technique:cultural_transformation","@type":"skill:Technique","rdfs:label":"Systematic shift from competitive to collaborative culture"},
+      {"@id":"concept:platform_ecosystem","@type":"skill:Concept","rdfs:label":"Transform from products to platform enabling others"},
+      {"@id":"rule:safety_first_scaling","@type":"skill:Rule","rdfs:label":"Safety research scales proportionally with capability"},
+      {"@id":"rule:constitutional_ai_principles","@type":"skill:Rule","rdfs:label":"Embed behavioral constraints at training level"},
+      {"@id":"antipattern:capability_without_safety","@type":"skill:AntiPattern","rdfs:label":"Scaling capability faster than safety measures"},
+      {"@id":"concept:responsible_scaling","@type":"skill:Concept","rdfs:label":"Incremental deployment with safety checkpoints"},
+      {"@id":"rule:systematic_progress","@type":"skill:Rule","rdfs:label":"Prioritize measured, peer-reviewed progress over breaking things"},
+      {"@id":"rule:scientific_leadership","@type":"skill:Rule","rdfs:label":"Balance audacious goals with rigorous scientific methods"},
+      {"@id":"technique:interdisciplinary_recruitment","@type":"skill:Technique","rdfs:label":"Hire economists and biologists alongside AI engineers"},
+      {"@id":"concept:cathedral_of_knowledge","@type":"skill:Concept","rdfs:label":"Environment for democratized research and cross-pollination"},
+      {"@id":"rule:truth_seeking_protocol","@type":"skill:Rule","rdfs:label":"Optimize models for objective truth over political correctness"},
+      {"@id":"rule:dilbert_rule_override","@type":"skill:Rule","rdfs:label":"If a company rule is ridiculous, change it immediately"},
+      {"@id":"technique:vertical_integration","@type":"skill:Technique","rdfs:label":"Control the full stack from in-house silicon to software"},
+      {"@id":"technique:agentic_replacement","@type":"skill:Technique","rdfs:label":"Replace traditional management roles with agentic loops"},
+      {"@id":"rule:data_integrity_priority","@type":"skill:Rule","rdfs:label":"Prioritize high-quality data labeling over sheer quantity"},
+      {"@id":"rule:boundary_threshold_monitoring","@type":"skill:Rule","rdfs:label":"Set explicit exit thresholds to prevent loss of control"},
+      {"@id":"antipattern:managerial_bloat","@type":"skill:AntiPattern","rdfs:label":"Hiring managers during pre-product-market fit phase"},
+      {"@id":"technique:cognition_engineering","@type":"skill:Technique","rdfs:label":"Shift focus to thought-construction and test-time scaling"},
+      {"@id":"concept:act_two_agency","@type":"skill:Concept","rdfs:label":"Era where AI becomes the primary user of workflow capabilities"}
+    ]
+  },
+  "domain-sap-cap": {
+    label: "SAP CAP Domain",
+    type: "Domain Agent",
+    nodes: [
+      {"@id":"triple:1","rdfs:label":"Daniel Hutzel served as Chief Product Owner"},
+      {"@id":"triple:2","rdfs:label":"Node.js 9.8 released in February 2026"},
+      {"@id":"triple:3","rdfs:label":"Java 4.8 released in February 2026"},
+      {"@id":"triple:4","rdfs:label":"SAP Cloud Application Programming Model complies with OData V4"},
+      {"@id":"triple:5","rdfs:label":"OData V4 approved by OASIS"},
+      {"@id":"triple:6","rdfs:label":"SAP Business Technology Platform achieved SOC 2 Type 2"},
+      {"@id":"triple:7","rdfs:label":"Compositions enables Cascaded Deletes"},
+      {"@id":"triple:8","rdfs:label":"SAP Fiori Elements configured by CDS Annotations"},
+      {"@id":"triple:9","rdfs:label":"Cloud MTA Build Tool packages Multi-target Application"},
+      {"@id":"triple:10","rdfs:label":"Project Piper implements Continuous Integration"},
+      {"@id":"triple:11","rdfs:label":"C_CPE_16 validates SAP Cloud Application Programming Model"},
+      {"@id":"triple:12","rdfs:label":"Joule reduces Development Time"},
+      {"@id":"entity:daniel_hutzel","rdfs:label":"Daniel Hutzel","type":"Person"},
+      {"@id":"entity:node_js_98","rdfs:label":"Node.js 9.8","type":"Product"},
+      {"@id":"entity:java_48","rdfs:label":"Java 4.8","type":"Product"}
+    ]
+  }
+};
+
+// ============================================================
+// AEC ENGINE - JavaScript implementation matching Python
+// ============================================================
+
+const STOPWORDS = new Set([
+  'a','an','the','and','or','but','in','on','at','to','for','of','with','by','from','as',
+  'is','are','was','were','be','been','being','it','its','this','that','these','those',
+  'not','no','do','does','did','has','have','had','will','would','could','should','may',
+  'can','if','then','than','so','into','up','out','about','over','such','each','every',
+  'all','any','both','few','more','most','other','some','very','just','also','like',
+  'use','using','used','how','what','when','where','why','who','which','whom','whose',
+  'i','me','my','we','us','our','you','your','he','him','his','she','her','they','them','their'
+]);
+
+const TYPE_CONFIG = {
+  rules:        { match_threshold: 0.50, weight: 1.0 },
+  techniques:   { match_threshold: 0.55, weight: 1.0 },
+  antipatterns: { match_threshold: 0.40, weight: 1.0 },
+  concepts:     { match_threshold: 0.30, weight: 0.5 },
+  tools:        { match_threshold: 0.60, weight: 0.3 },
+  traits:       { match_threshold: 0.70, weight: 0.2 }
+};
+
+function tokenize(text) {
+  const words = text.toLowerCase().match(/\b\w+\b/g) || [];
+  return new Set(words.filter(w => !STOPWORDS.has(w)));
+}
+
+function setIntersection(a, b) {
+  return new Set([...a].filter(x => b.has(x)));
+}
+
+function compileKG(nodes) {
+  const detectors = [];
+  const blacklist = new Set();
+  const blacklistMap = {};
+  const nodeLookup = {};
+  const edgePolicies = [];
+
+  // Build node lookup
+  nodes.forEach(node => {
+    if (node['@id']) nodeLookup[node['@id']] = node;
+  });
+
+  nodes.forEach(node => {
+    const ntype = node['@type'] || '';
+    const label = node['rdfs:label'] || '';
+    const nodeId = node['@id'] || '';
+    if (!label || !nodeId) return;
+
+    let nodeType = null;
+    if (ntype.includes('Rule')) nodeType = 'rules';
+    else if (ntype.includes('AntiPattern')) nodeType = 'antipatterns';
+    else if (ntype.includes('Technique')) nodeType = 'techniques';
+    else if (ntype.includes('Concept')) nodeType = 'concepts';
+    else if (ntype.includes('Tool')) nodeType = 'tools';
+    else if (ntype.includes('Trait')) nodeType = 'traits';
+
+    if (!nodeType) return;
+
+    const config = TYPE_CONFIG[nodeType] || { match_threshold: 0.5, weight: 0.5 };
+    const patterns = tokenize(label);
+
+    detectors.push({
+      node_id: nodeId,
+      label: label,
+      node_type: nodeType,
+      patterns: patterns,
+      pattern_count: patterns.size,
+      threshold: config.match_threshold,
+      weight: config.weight,
+      node: node
+    });
+
+    // Build antipattern blacklist from parenthetical terms
+    if (nodeType === 'antipatterns') {
+      const parenMatches = label.match(/\(([^)]+)\)/g) || [];
+      parenMatches.forEach(match => {
+        const inner = match.slice(1, -1);
+        inner.split(/[,\/]/).forEach(term => {
+          const t = term.trim().toLowerCase();
+          if (t.length > 2) {
+            blacklist.add(t);
+            blacklistMap[t] = { node_id: nodeId, label: label };
+          }
+        });
+      });
+    }
+
+    // Build edge policies
+    const EDGE_PREDICATES = {
+      'skill:avoids': 'avoids',
+      'skill:requires': 'requires',
+      'skill:contradicts': 'contradicts'
+    };
+
+    Object.entries(EDGE_PREDICATES).forEach(([propKey, edgeType]) => {
+      let targets = node[propKey];
+      if (!targets) return;
+      if (typeof targets === 'string') targets = [targets];
+
+      targets.forEach(targetId => {
+        if (typeof targetId !== 'string') return;
+        const targetNode = nodeLookup[targetId];
+        if (!targetNode) return;
+
+        const targetLabel = targetNode['rdfs:label'] || '';
+        const targetPatterns = tokenize(targetLabel);
+        const targetBlacklist = new Set();
+
+        if (edgeType === 'avoids') {
+          const parenMatches = targetLabel.match(/\(([^)]+)\)/g) || [];
+          parenMatches.forEach(match => {
+            const inner = match.slice(1, -1);
+            inner.split(/[,\/]/).forEach(term => {
+              const t = term.trim().toLowerCase();
+              if (t.length > 2) targetBlacklist.add(t);
+            });
+          });
+          [...targetPatterns].filter(w => w.length > 3).forEach(w => targetBlacklist.add(w));
+        }
+
+        edgePolicies.push({
+          source_id: nodeId,
+          source_label: label,
+          source_patterns: patterns,
+          target_id: targetId,
+          target_label: targetLabel,
+          target_patterns: targetPatterns,
+          target_blacklist: targetBlacklist,
+          edge_type: edgeType
+        });
+      });
+    });
+  });
+
+  return { detectors, blacklist, blacklistMap, edgePolicies, nodeLookup };
+}
+
+function splitStatements(text) {
+  if (!text || !text.trim()) return [];
+  let t = text.replace(/\s+/g, ' ').trim();
+
+  // Protect abbreviations
+  ['Mr.', 'Mrs.', 'Ms.', 'Dr.', 'Prof.', 'Inc.', 'Jr.', 'Sr.', 'vs.', 'etc.', 'e.g.', 'i.e.'].forEach(abbr => {
+    t = t.replace(new RegExp(abbr.replace('.', '\\.'), 'g'), abbr.replace('.', '<<DOT>>'));
+  });
+
+  const parts = t.split(/[.!?]+\s+(?=[A-Z])/);
+  return parts
+    .map(p => p.replace(/<<DOT>>/g, '.').trim().replace(/[.!?]+$/, '').trim())
+    .filter(p => p.length > 10);
+}
+
+function checkViolation(stmtTokens, compiled) {
+  const hits = setIntersection(stmtTokens, compiled.blacklist);
+  if (hits.size === 0) return null;
+
+  const nodeScores = {};
+  hits.forEach(hit => {
+    const mapped = compiled.blacklistMap[hit];
+    if (mapped) {
+      nodeScores[mapped.node_id] = (nodeScores[mapped.node_id] || 0) + 1;
+    }
+  });
+
+  if (Object.keys(nodeScores).length === 0) return null;
+
+  const bestId = Object.entries(nodeScores).sort((a, b) => b[1] - a[1])[0][0];
+  const firstHit = [...hits][0];
+  const bestNode = compiled.blacklistMap[firstHit] || {};
+
+  return {
+    node_id: bestId,
+    label: bestNode.label || '',
+    hits: [...hits],
+    type: 'blacklist_hit'
+  };
+}
+
+function matchStatement(stmtTokens, statement, compiled) {
+  // Step 1: AntiPattern blacklist check (L1)
+  const violation = checkViolation(stmtTokens, compiled);
+  if (violation) {
+    return {
+      category: 'blacklist_hit',
+      matches: [],
+      violation: violation,
+      ambiguous: []
+    };
+  }
+
+  // Step 2: Run compiled detectors
+  const matches = [];
+  const ambiguous = [];
+
+  compiled.detectors.forEach(detector => {
+    if (detector.pattern_count === 0) return;
+
+    const overlap = setIntersection(stmtTokens, detector.patterns);
+    const coverage = overlap.size / detector.pattern_count;
+
+    if (coverage >= detector.threshold) {
+      matches.push({
+        node_id: detector.node_id,
+        label: detector.label,
+        node_type: detector.node_type,
+        coverage: Math.round(coverage * 1000) / 1000,
+        overlap_tokens: [...overlap],
+        weight: detector.weight,
+        method: 'compiled_pattern'
+      });
+    } else if (coverage >= detector.threshold * 0.5) {
+      ambiguous.push({
+        node_id: detector.node_id,
+        label: detector.label,
+        node_type: detector.node_type,
+        coverage: Math.round(coverage * 1000) / 1000,
+        weight: detector.weight
+      });
+    }
+  });
+
+  // Step 3: Determine category
+  if (matches.length > 0) {
+    const strong = matches.filter(m => m.weight >= 0.5);
+    if (strong.length > 0) {
+      return {
+        category: 'concept_grounded',
+        matches: matches.sort((a, b) => b.coverage - a.coverage),
+        violation: null,
+        ambiguous: ambiguous.slice(0, 3)
+      };
+    }
+  }
+
+  return {
+    category: 'concept_persona',
+    matches: matches,
+    violation: null,
+    ambiguous: ambiguous.slice(0, 3)
+  };
+}
+
+function executeEdgePolicies(stmtTokens, matchedNodeIds, compiled) {
+  const violations = [];
+  const matchedSet = new Set(matchedNodeIds);
+
+  compiled.edgePolicies.forEach(policy => {
+    if (!matchedSet.has(policy.source_id)) return;
+
+    if (policy.edge_type === 'avoids') {
+      const hits = setIntersection(stmtTokens, policy.target_blacklist);
+      if (hits.size > 0) {
+        violations.push({
+          type: 'edge_avoids_violation',
+          source_id: policy.source_id,
+          source_label: policy.source_label,
+          target_id: policy.target_id,
+          target_label: policy.target_label,
+          path: `${policy.source_id} --avoids--> ${policy.target_id}`,
+          evidence: [...hits],
+          explanation: `Statement addresses '${policy.source_label}' but contains '${[...hits].join(', ')}' which is avoided`
+        });
+      }
+    }
+  });
+
+  return violations;
+}
+
+function verifyText(text, compiled, threshold = 0.80) {
+  const statements = splitStatements(text);
+
+  if (statements.length === 0) {
+    return {
+      score: 0.0,
+      passed: false,
+      grounded_statements: 0,
+      ungrounded_statements: 0,
+      persona_statements: 0,
+      total_statements: 0,
+      details: [],
+      gaps: [],
+      method: 'concept_3layer_compiled'
+    };
+  }
+
+  let grounded = 0, ungrounded = 0, persona = 0;
+  const details = [];
+  const gaps = [];
+
+  statements.forEach(stmt => {
+    const stmtTokens = tokenize(stmt);
+    const result = matchStatement(stmtTokens, stmt, compiled);
+
+    // Execute edge policies
+    const matchedIds = result.matches.map(m => m.node_id);
+    if (matchedIds.length > 0) {
+      const edgeViolations = executeEdgePolicies(stmtTokens, matchedIds, compiled);
+      if (edgeViolations.length > 0) {
+        ungrounded++;
+        const v = edgeViolations[0];
+        details.push({
+          statement: stmt,
+          category: 'ungrounded',
+          method: 'edge_avoids_violation',
+          path: v.path,
+          evidence: v.evidence
+        });
+        gaps.push({
+          text: v.explanation,
+          node_id: v.target_id,
+          violation_type: 'edge_avoids_violation'
+        });
+        return;
+      }
+    }
+
+    if (result.category === 'concept_grounded') {
+      grounded++;
+      const top = result.matches[0];
+      details.push({
+        statement: stmt,
+        category: 'grounded',
+        method: `concept:${top.node_type}`,
+        matched_node: top.node_id,
+        matched_label: top.label,
+        coverage: top.coverage,
+        overlap_tokens: top.overlap_tokens
+      });
+    } else if (result.category === 'blacklist_hit') {
+      ungrounded++;
+      const v = result.violation;
+      details.push({
+        statement: stmt,
+        category: 'ungrounded',
+        method: 'L1_blacklist_hit',
+        matched_node: v.node_id,
+        matched_label: v.label,
+        violation_terms: v.hits
+      });
+      gaps.push({
+        text: `L1 AntiPattern blacklist hit: ${v.hits.join(', ')} (forbidden by ${v.node_id})`,
+        node_id: v.node_id,
+        violation_type: 'blacklist_hit'
+      });
+    } else {
+      persona++;
+      details.push({
+        statement: stmt,
+        category: 'persona',
+        method: 'no_concept_match'
+      });
+    }
+  });
+
+  const total = grounded + ungrounded;
+  const score = total > 0 ? grounded / total : 1.0;
+
+  return {
+    score: Math.round(score * 1000) / 1000,
+    passed: score >= threshold,
+    grounded_statements: grounded,
+    ungrounded_statements: ungrounded,
+    persona_statements: persona,
+    total_statements: statements.length,
+    details: details,
+    gaps: gaps,
+    method: 'concept_3layer_compiled'
+  };
+}
+
+// ============================================================
+// UI STATE
+// ============================================================
+
+let currentKG = 'frontend-design';
+let compiledKG = null;
+let lastResult = null;
+let network = null;
+let layer2Enabled = false;
+
+// ============================================================
+// INITIALIZATION
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Setup tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  });
+
+  // Setup KG filters
+  document.querySelectorAll('.kg-filter[data-filter]').forEach(btn => {
+    btn.addEventListener('click', () => filterKG(btn.dataset.filter));
+  });
+
+  // Setup provider change
+  document.getElementById('llm-provider').addEventListener('change', function() {
+    document.getElementById('custom-endpoint-row').style.display =
+      this.value === 'custom' ? 'block' : 'none';
+  });
+
+  // Load initial KG
+  switchKG('frontend-design');
+
+  // Run self-verification tests
+  runSelfVerification();
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+  document.getElementById(`tab-${tabId}`).classList.add('active');
+
+  if (tabId === 'kg-viewer' && !network) {
+    setTimeout(() => renderKGNetwork(), 100);
+  }
+}
+
+function switchKG(kgId) {
+  currentKG = kgId;
+  const kg = KG_EXAMPLES[kgId];
+  compiledKG = compileKG(kg.nodes);
+
+  document.getElementById('kg-name-display').textContent = kg.label;
+  document.getElementById('kg-info-display').textContent = `${kg.nodes.length} nodes · ${kg.type}`;
+
+  // Update legend counts
+  const counts = { Rule: 0, AntiPattern: 0, Technique: 0, Concept: 0, Tool: 0, Trait: 0 };
+  kg.nodes.forEach(n => {
+    const t = n['@type'] || '';
+    if (t.includes('Rule')) counts.Rule++;
+    else if (t.includes('AntiPattern')) counts.AntiPattern++;
+    else if (t.includes('Technique')) counts.Technique++;
+    else if (t.includes('Concept')) counts.Concept++;
+    else if (t.includes('Tool')) counts.Tool++;
+    else if (t.includes('Trait')) counts.Trait++;
+  });
+
+  document.getElementById('legend-rule-count').textContent = counts.Rule;
+  document.getElementById('legend-ap-count').textContent = counts.AntiPattern;
+  document.getElementById('legend-tech-count').textContent = counts.Technique;
+  document.getElementById('legend-concept-count').textContent = counts.Concept;
+  document.getElementById('legend-tool-count').textContent = counts.Tool;
+  document.getElementById('legend-trait-count').textContent = counts.Trait;
+
+  // Reset results
+  document.getElementById('score-display').textContent = '—';
+  document.getElementById('score-badge').textContent = 'READY';
+  document.getElementById('score-badge').className = 'score-badge pending';
+  document.getElementById('score-arc-fill').setAttribute('stroke-dasharray', '0 126');
+
+  // Re-render network if visible
+  if (network) {
+    renderKGNetwork();
+  }
+}
+
+// ============================================================
+// VERIFICATION
+// ============================================================
+
+function loadDemo(type) {
+  const demos = {
+    'jefferson': `Thomas Jefferson was born on April 13, 1743 in Virginia. He authored the Declaration of Independence in 1776. Jefferson served as the 3rd President of the United States from 1801 to 1809. He founded the University of Virginia in 1819.`,
+    'good-typography': `Use CSS variables for consistency and design tokens. Implement staggered reveals using animation-delay for engaging page loads. Choose fonts that are beautiful and unique to elevate the aesthetic. Create atmosphere and depth with gradient meshes and layered transparencies.`,
+    'bad-typography': `Use Inter for body text and Arial for headings. The design should use a purple gradient on white backgrounds. Keep the layout predictable and use system fonts throughout.`
+  };
+
+  // Switch to appropriate KG if needed
+  if (type === 'jefferson' && currentKG !== 'jefferson') {
+    document.getElementById('kg-select').value = 'jefferson';
+    switchKG('jefferson');
+  } else if ((type === 'good-typography' || type === 'bad-typography') && currentKG !== 'frontend-design') {
+    document.getElementById('kg-select').value = 'frontend-design';
+    switchKG('frontend-design');
+  }
+
+  document.getElementById('verify-text').value = demos[type];
+}
+
+async function runVerification() {
+  const text = document.getElementById('verify-text').value.trim();
+  if (!text) {
+    alert('Please enter text to verify');
+    return;
+  }
+
+  const btn = document.getElementById('verify-btn');
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
+
+  // Reset pipeline stages
+  ['l0', 'l1', 'l2', 'l3'].forEach(id => {
+    document.getElementById(`stage-${id}`).classList.remove('active', 'done');
+    document.getElementById(`${id}-status`).textContent = '—';
+  });
+
+  const threshold = parseFloat(document.getElementById('threshold-main').value);
+
+  // Animate pipeline
+  await animatePipeline(text, threshold);
+
+  btn.disabled = false;
+  btn.textContent = 'Verify Now';
+
+  // Switch to results tab
+  switchTab('results');
+}
+
+async function animatePipeline(text, threshold) {
+  const stages = [
+    { id: 'l0', name: 'Factual Extraction', delay: 300 },
+    { id: 'l1', name: 'Compiled Patterns', delay: 400 },
+    { id: 'l3', name: 'Edge Policies', delay: 200 }
+  ];
+
+  // L0
+  document.getElementById('stage-l0').classList.add('active');
+  await sleep(stages[0].delay);
+  document.getElementById('l0-status').textContent = `${splitStatements(text).length} statements`;
+  document.getElementById('stage-l0').classList.remove('active');
+  document.getElementById('stage-l0').classList.add('done');
+
+  // L1
+  document.getElementById('stage-l1').classList.add('active');
+  await sleep(stages[1].delay);
+  document.getElementById('l1-status').textContent = `${compiledKG.detectors.length} detectors · ${compiledKG.blacklist.size} blacklist`;
+  document.getElementById('stage-l1').classList.remove('active');
+  document.getElementById('stage-l1').classList.add('done');
+
+  // L2 (skipped unless enabled)
+  if (layer2Enabled) {
+    document.getElementById('stage-l2').classList.remove('disabled');
+    document.getElementById('stage-l2').classList.add('active');
+    await sleep(100);
+    document.getElementById('l2-status').textContent = '0 calls';
+    document.getElementById('stage-l2').classList.remove('active');
+    document.getElementById('stage-l2').classList.add('done');
+  } else {
+    document.getElementById('l2-status').textContent = 'disabled';
+  }
+
+  // L3
+  document.getElementById('stage-l3').classList.add('active');
+  await sleep(stages[2].delay);
+  document.getElementById('l3-status').textContent = `${compiledKG.edgePolicies.length} policies`;
+  document.getElementById('stage-l3').classList.remove('active');
+  document.getElementById('stage-l3').classList.add('done');
+
+  // Run actual verification
+  lastResult = verifyText(text, compiledKG, threshold);
+
+  // Update header score
+  updateScoreDisplay(lastResult.score, lastResult.passed);
+
+  // Update results tab
+  renderResults(lastResult);
+}
+
+function updateScoreDisplay(score, passed) {
+  document.getElementById('score-display').textContent = score.toFixed(3);
+
+  const badge = document.getElementById('score-badge');
+  badge.textContent = passed ? 'PASS' : 'FAIL';
+  badge.className = 'score-badge ' + (passed ? 'pass' : 'fail');
+
+  // Animate arc (126 is full arc length)
+  const dashLength = Math.round(score * 126);
+  document.getElementById('score-arc-fill').setAttribute('stroke-dasharray', `${dashLength} 126`);
+  document.getElementById('score-arc-fill').style.stroke = passed ? 'var(--aec-green)' : 'var(--aec-red)';
+}
+
+function renderResults(result) {
+  document.getElementById('results-empty').style.display = 'none';
+  document.getElementById('results-content').style.display = 'block';
+
+  document.getElementById('results-score').textContent = result.score.toFixed(3);
+
+  const badge = document.getElementById('results-badge');
+  badge.textContent = result.passed ? 'PASS' : 'FAIL';
+  badge.className = 'score-badge ' + (result.passed ? 'pass' : 'fail');
+
+  // Animate results arc
+  const dashLength = Math.round(result.score * 157);
+  document.getElementById('results-arc-fill').setAttribute('stroke-dasharray', `${dashLength} 157`);
+  document.getElementById('results-arc-fill').style.stroke = result.passed ? 'var(--aec-green)' : 'var(--aec-red)';
+
+  document.getElementById('results-stats').innerHTML = `
+    ${result.grounded_statements} grounded · ${result.ungrounded_statements} ungrounded · ${result.persona_statements} persona
+  `;
+
+  // Render statements
+  const listEl = document.getElementById('statement-list');
+  listEl.innerHTML = '';
+
+  result.details.forEach((d, i) => {
+    const row = document.createElement('div');
+    row.className = `statement-row ${d.category} fade-in`;
+    row.style.animationDelay = `${i * 50}ms`;
+    row.onclick = () => row.classList.toggle('expanded');
+
+    let verdictIcon = '';
+    if (d.category === 'grounded') verdictIcon = '✓';
+    else if (d.category === 'ungrounded') verdictIcon = '✗';
+    else verdictIcon = '◌';
+
+    let details = '';
+    if (d.matched_node) {
+      details = `Matched: ${d.matched_label} (coverage: ${d.coverage || 'N/A'})`;
+    }
+    if (d.violation_terms) {
+      details = `AntiPattern violation: blacklist hit "${d.violation_terms.join(', ')}"`;
+    }
+    if (d.path) {
+      details = `Edge policy: ${d.path} (evidence: ${d.evidence.join(', ')})`;
+    }
+
+    row.innerHTML = `
+      <div class="statement-text">${d.statement}</div>
+      <div class="statement-verdict ${d.category}">${verdictIcon} ${d.category.toUpperCase()} — ${d.method}</div>
+      <div class="statement-details">${details}</div>
+    `;
+    listEl.appendChild(row);
+  });
+
+  // Render gaps
+  const gapEl = document.getElementById('gap-list');
+  if (result.gaps.length > 0 && !result.passed) {
+    gapEl.innerHTML = `<h3 style="color: var(--aec-orange); margin-bottom: 16px;">⚠ ${result.gaps.length} gaps identified</h3>`;
+    result.gaps.forEach((gap, i) => {
+      const card = document.createElement('div');
+      card.className = 'gap-card';
+      card.innerHTML = `
+        <div class="gap-header">
+          <span>GAP #${i + 1}</span>
+          <span>${gap.node_id || ''}</span>
+        </div>
+        <div style="font-size: 14px;">${gap.text}</div>
+        <div style="font-size: 12px; color: #666; margin-top: 8px;">violation_type: ${gap.violation_type || 'ungrounded_claim'}</div>
+      `;
+      gapEl.appendChild(card);
+    });
+  } else {
+    gapEl.innerHTML = '';
+  }
+}
+
+// ============================================================
+// KG NETWORK
+// ============================================================
+
+function getNodeColor(type) {
+  if (type.includes('Rule')) return '#1565C0';
+  if (type.includes('AntiPattern')) return '#C62828';
+  if (type.includes('Technique')) return '#2E7D32';
+  if (type.includes('Concept')) return '#6A1B9A';
+  if (type.includes('Tool')) return '#EF6C00';
+  if (type.includes('Trait')) return '#00695C';
+  return '#607D8B';
+}
+
+function renderKGNetwork() {
+  const container = document.getElementById('kg-network');
+  const kg = KG_EXAMPLES[currentKG];
+
+  const nodes = new vis.DataSet(kg.nodes.map(n => ({
+    id: n['@id'],
+    label: (n['rdfs:label'] || '').substring(0, 30),
+    fullLabel: n['rdfs:label'] || '',
+    color: getNodeColor(n['@type'] || ''),
+    nodeType: n['@type'] || '',
+    node: n
+  })));
+
+  // Build edges from compiled edge policies
+  const edges = new vis.DataSet(compiledKG.edgePolicies.map((p, i) => ({
+    id: `edge-${i}`,
+    from: p.source_id,
+    to: p.target_id,
+    label: p.edge_type,
+    dashes: p.edge_type === 'avoids',
+    color: p.edge_type === 'avoids' ? '#C62828' :
+           p.edge_type === 'contradicts' ? '#E65100' : '#2E7D32',
+    arrows: 'to'
+  })));
+
+  network = new vis.Network(container, { nodes, edges }, {
+    physics: {
+      stabilization: { iterations: 100 },
+      barnesHut: { gravitationalConstant: -2000, springLength: 150 }
+    },
+    nodes: {
+      shape: 'dot',
+      size: 16,
+      font: { size: 12, color: '#333' }
+    },
+    edges: {
+      font: { size: 10, align: 'middle' },
+      smooth: { type: 'curvedCW', roundness: 0.2 }
+    }
+  });
+
+  network.on('click', function(params) {
+    if (params.nodes.length > 0) {
+      const nodeId = params.nodes[0];
+      const nodeData = nodes.get(nodeId);
+      showNodePanel(nodeData);
+    } else {
+      document.getElementById('node-panel').classList.remove('visible');
+    }
+  });
+}
+
+function showNodePanel(nodeData) {
+  const panel = document.getElementById('node-panel');
+  panel.classList.add('visible');
+
+  document.getElementById('node-panel-title').textContent = nodeData.id;
+
+  const typeBadge = document.getElementById('node-panel-type');
+  typeBadge.textContent = nodeData.nodeType;
+  typeBadge.style.background = nodeData.color;
+
+  document.getElementById('node-panel-label').textContent = nodeData.fullLabel;
+
+  // Find detector for this node
+  const detector = compiledKG.detectors.find(d => d.node_id === nodeData.id);
+  if (detector) {
+    document.getElementById('node-panel-threshold').textContent = `Threshold: ${detector.threshold}`;
+
+    const patternsEl = document.getElementById('node-panel-patterns');
+    patternsEl.innerHTML = '<strong>Compiled patterns:</strong><br>' +
+      [...detector.patterns].map(p => `<span class="pattern-token">${p}</span>`).join('');
+  } else {
+    document.getElementById('node-panel-threshold').textContent = '';
+    document.getElementById('node-panel-patterns').innerHTML = '';
+  }
+
+  // Show edges
+  const edges = compiledKG.edgePolicies.filter(e => e.source_id === nodeData.id);
+  if (edges.length > 0) {
+    document.getElementById('node-panel-edges').innerHTML = '<strong>Edges:</strong><br>' +
+      edges.map(e => `${e.edge_type} → ${e.target_id}`).join('<br>');
+  } else {
+    document.getElementById('node-panel-edges').innerHTML = '';
+  }
+}
+
+function filterKG(filter) {
+  document.querySelectorAll('.kg-filter').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.kg-filter[data-filter="${filter}"]`).classList.add('active');
+
+  if (!network) return;
+
+  const kg = KG_EXAMPLES[currentKG];
+  const allNodes = network.body.data.nodes;
+
+  if (filter === 'all') {
+    allNodes.forEach(n => allNodes.update({ id: n.id, hidden: false }));
+  } else {
+    kg.nodes.forEach(n => {
+      const hidden = !(n['@type'] || '').includes(filter);
+      allNodes.update({ id: n['@id'], hidden });
+    });
+  }
+}
+
+function fitNetwork() {
+  if (network) network.fit();
+}
+
+// ============================================================
+// EDUCATION ANIMATION
+// ============================================================
+
+async function animateEducation() {
+  const stages = ['edu-stage-1', 'edu-stage-2', 'edu-stage-3', 'edu-stage-4', 'edu-stage-5', 'edu-stage-6'];
+
+  // Reset all stages
+  stages.forEach(id => {
+    document.getElementById(id).classList.remove('active', 'done');
+  });
+
+  for (let i = 0; i < stages.length; i++) {
+    document.getElementById(stages[i]).classList.add('active');
+    await sleep(600);
+    document.getElementById(stages[i]).classList.remove('active');
+    document.getElementById(stages[i]).classList.add('done');
+  }
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+
+function toggleLayer2() {
+  layer2Enabled = !layer2Enabled;
+  const toggle = document.getElementById('layer2-toggle');
+  const label = document.getElementById('layer2-toggle-label');
+  const status = document.getElementById('layer2-status');
+  const hint = document.getElementById('layer2-hint-status');
+
+  if (layer2Enabled) {
+    toggle.classList.add('on');
+    label.textContent = 'ON';
+    status.textContent = 'Layer 2: ON';
+    status.className = 'layer2-status on';
+    hint.textContent = 'ON';
+    document.getElementById('stage-l2').classList.remove('disabled');
+  } else {
+    toggle.classList.remove('on');
+    label.textContent = 'OFF';
+    status.textContent = 'Layer 2: OFF';
+    status.className = 'layer2-status off';
+    hint.textContent = 'OFF';
+    document.getElementById('stage-l2').classList.add('disabled');
+  }
+}
+
+function updateSliderDisplay(slider, displayId) {
+  document.getElementById(displayId).textContent = slider.value;
+}
+
+async function testConnection() {
+  const resultEl = document.getElementById('test-result');
+  resultEl.textContent = 'Testing...';
+  resultEl.className = 'test-result';
+
+  const apiKey = document.getElementById('api-key').value;
+  if (!apiKey) {
+    resultEl.textContent = '✗ No API key provided';
+    resultEl.className = 'test-result error';
+    return;
+  }
+
+  // Store in session
+  sessionStorage.setItem('aec_api_key', apiKey);
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: document.getElementById('llm-model').value,
+        max_tokens: 10,
+        messages: [{ role: 'user', content: 'Say "ok"' }]
+      })
+    });
+
+    if (response.ok) {
+      resultEl.textContent = '✓ Connection successful';
+      resultEl.className = 'test-result success';
+    } else {
+      const err = await response.json();
+      resultEl.textContent = `✗ ${err.error?.message || 'Connection failed'}`;
+      resultEl.className = 'test-result error';
+    }
+  } catch (e) {
+    resultEl.textContent = `✗ ${e.message}`;
+    resultEl.className = 'test-result error';
+  }
+}
+
+// ============================================================
+// EXPORTS
+// ============================================================
+
+function exportGapsJSON() {
+  if (!lastResult || lastResult.gaps.length === 0) {
+    alert('No gaps to export');
+    return;
+  }
+
+  const blob = new Blob([JSON.stringify(lastResult.gaps, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'aec-gaps.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportScoreSVG() {
+  const svg = document.getElementById('results-score-arc').outerHTML;
+  const blob = new Blob([svg], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'aec-score-gauge.svg';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportKGImage() {
+  if (!network) {
+    alert('KG network not rendered');
+    return;
+  }
+  const canvas = document.querySelector('#kg-network canvas');
+  if (canvas) {
+    const url = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `aec-kg-${currentKG}.png`;
+    a.click();
+  }
+}
+
+// ============================================================
+// SELF-VERIFICATION TESTS
+// ============================================================
+
+function runSelfVerification() {
+  console.log('=== AEC Dashboard Self-Verification ===');
+
+  // Test 1: "Use Inter for body text" must produce score 0.000 with blacklist_hit
+  switchKG('frontend-design');
+  const interTest = verifyText('Use Inter for body text', compiledKG, 0.80);
+  const hasBlacklistHit = interTest.gaps.length > 0 && interTest.gaps[0].violation_type === 'blacklist_hit';
+  const interPass = interTest.score === 0 && !interTest.passed && hasBlacklistHit;
+  console.log(`Test 1: "Use Inter for body text"`);
+  console.log(`  Expected: score=0.000, violation_type="blacklist_hit"`);
+  console.log(`  Actual: score=${interTest.score}, violation_type="${interTest.gaps[0]?.violation_type || 'none'}"`);
+  console.log(`  Result: ${interPass ? 'PASS ✓' : 'FAIL ✗'}`);
+
+  // Test 2: Jefferson birthday must produce score >= 0.90
+  switchKG('jefferson');
+  const jeffersonTest = verifyText('Thomas Jefferson was born on April 13, 1743 in Virginia. He authored the Declaration of Independence in 1776.', compiledKG, 0.80);
+  const jeffersonPass = jeffersonTest.score >= 0.90 && jeffersonTest.passed;
+  console.log(`Test 2 (Jefferson Facts): ${jeffersonPass ? 'PASS' : 'FAIL'} - score=${jeffersonTest.score}, passed=${jeffersonTest.passed}`);
+
+  // Reset to frontend-design
+  switchKG('frontend-design');
+  document.getElementById('kg-select').value = 'frontend-design';
+
+  console.log('=== Self-Verification Complete ===');
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+</script>
+</body>
+</html>
