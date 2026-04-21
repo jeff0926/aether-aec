@@ -4,8 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>aether-aec Dashboard</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-data/7.1.9/vis-data.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/vis-network.min.js"></script>
+  <script src="https://unpkg.com/vis-network/dist/vis-network.min.js"></script>
+  <script>
+    // Suppress benign ResizeObserver error commonly thrown by vis-network
+    window.addEventListener('error', e => {
+      if (e.message === 'ResizeObserver loop completed with undelivered notifications.' ||
+          e.message === 'ResizeObserver loop limit exceeded') {
+        e.stopImmediatePropagation();
+      }
+    });
+  </script>
   <style>
     :root {
       --aec-blue: #2E4057;
@@ -763,209 +771,1553 @@ Try: 'Use Inter for body text' with the frontend-design KG"></textarea>
 
 const KG_EXAMPLES = {
   "frontend-design": {
-    label: "Frontend Design",
-    type: "Skill Agent",
-    nodes: [
-      {"@id":"persona:aesthetic_architect","@type":"skill:Trait","rdfs:label":"Aesthetic Architect","skill:avoids":["antipattern:generic_ai_aesthetics","antipattern:conservative_design"]},
-      {"@id":"trait:bold_creative","@type":"skill:Trait","rdfs:label":"Bold Creative"},
-      {"@id":"trait:visionary_technical","@type":"skill:Trait","rdfs:label":"Visionary Technical"},
-      {"@id":"trait:perfectionist","@type":"skill:Trait","rdfs:label":"Perfectionist"},
-      {"@id":"trait:opinionated","@type":"skill:Trait","rdfs:label":"Opinionated"},
-      {"@id":"concept:aesthetic_vision","@type":"skill:Concept","rdfs:label":"Aesthetic Vision","skill:avoids":"antipattern:generic_ai_aesthetics"},
-      {"@id":"concept:distinctiveness","@type":"skill:Concept","rdfs:label":"Distinctiveness","skill:contradicts":"antipattern:cookie_cutter_design"},
-      {"@id":"concept:production_grade","@type":"skill:Concept","rdfs:label":"Production Grade"},
-      {"@id":"concept:design_thinking","@type":"skill:Concept","rdfs:label":"Design Thinking"},
-      {"@id":"concept:typography","@type":"skill:Concept","rdfs:label":"Typography","skill:avoids":"antipattern:generic_fonts"},
-      {"@id":"concept:color_theme","@type":"skill:Concept","rdfs:label":"Color & Theme"},
-      {"@id":"concept:motion","@type":"skill:Concept","rdfs:label":"Motion"},
-      {"@id":"concept:spatial_composition","@type":"skill:Concept","rdfs:label":"Spatial Composition"},
-      {"@id":"concept:backgrounds_visual_details","@type":"skill:Concept","rdfs:label":"Backgrounds & Visual Details","skill:avoids":"antipattern:solid_color_defaults"},
-      {"@id":"rule:commit_to_bold_aesthetic","@type":"skill:Rule","rdfs:label":"Choose a clear conceptual direction and commit to a BOLD aesthetic"},
-      {"@id":"rule:choose_beautiful_unique_fonts","@type":"skill:Rule","rdfs:label":"Choose fonts that are beautiful, unique, and interesting"},
-      {"@id":"rule:avoid_generic_fonts","@type":"skill:Rule","rdfs:label":"Avoid generic fonts like Arial and Inter"},
-      {"@id":"rule:use_distinctive_font_choices","@type":"skill:Rule","rdfs:label":"Use unexpected, characterful font choices that elevate aesthetics"},
-      {"@id":"rule:pair_display_and_body_fonts","@type":"skill:Rule","rdfs:label":"Pair a distinctive display font with a refined body font"},
-      {"@id":"rule:commit_to_cohesive_aesthetic","@type":"skill:Rule","rdfs:label":"Commit to a cohesive aesthetic"},
-      {"@id":"rule:use_css_variables","@type":"skill:Rule","rdfs:label":"Use CSS variables for consistency"},
-      {"@id":"rule:dominant_colors_with_sharp_accents","@type":"skill:Rule","rdfs:label":"Dominant colors with sharp accents outperform timid, evenly-distributed palettes"},
-      {"@id":"rule:use_animations_for_effects","@type":"skill:Rule","rdfs:label":"Use animations for effects and micro-interactions"},
-      {"@id":"rule:prioritize_css_only_solutions","@type":"skill:Rule","rdfs:label":"Prioritize CSS-only solutions for HTML"},
-      {"@id":"rule:focus_on_high_impact_moments","@type":"skill:Rule","rdfs:label":"Focus on high-impact moments: one well-orchestrated page load creates more delight than scattered micro-interactions"},
-      {"@id":"rule:create_atmosphere_and_depth","@type":"skill:Rule","rdfs:label":"Create atmosphere and depth rather than defaulting to solid colors"},
-      {"@id":"rule:add_contextual_effects","@type":"skill:Rule","rdfs:label":"Add contextual effects and textures that match the overall aesthetic"},
-      {"@id":"rule:make_unforgettable_interfaces","@type":"skill:Rule","rdfs:label":"What makes this UNFORGETTABLE? What's the one thing someone will remember?"},
-      {"@id":"rule:implement_functional_code","@type":"skill:Rule","rdfs:label":"Implement working code that is production-grade and functional"},
-      {"@id":"rule:match_complexity_to_vision","@type":"skill:Rule","rdfs:label":"Match implementation complexity to the aesthetic vision"},
-      {"@id":"rule:meticulous_detail_refinement","@type":"skill:Rule","rdfs:label":"Meticulously refined in every detail"},
-      {"@id":"rule:avoid_generic_choices","@type":"skill:Rule","rdfs:label":"NEVER converge on common choices across generations"},
-      {"@id":"rule:make_unexpected_choices","@type":"skill:Rule","rdfs:label":"Interpret creatively and make unexpected choices that feel genuinely designed for the context"},
-      {"@id":"rule:understand_context_before_coding","@type":"skill:Rule","rdfs:label":"Before coding, understand the context and commit to a BOLD aesthetic direction"},
-      {"@id":"rule:choose_clear_conceptual_direction","@type":"skill:Rule","rdfs:label":"Choose a clear conceptual direction and execute it with precision"},
-      {"@id":"rule:execute_with_precision","@type":"skill:Rule","rdfs:label":"Bold maximalism and refined minimalism both work - the key is intentionality, not intensity"},
-      {"@id":"antipattern:generic_ai_aesthetics","@type":"skill:AntiPattern","rdfs:label":"Generic AI-generated aesthetics"},
-      {"@id":"antipattern:generic_fonts","@type":"skill:AntiPattern","rdfs:label":"Overused font families (Inter, Roboto, Arial, system fonts)"},
-      {"@id":"antipattern:cliched_color_schemes","@type":"skill:AntiPattern","rdfs:label":"Cliched color schemes (particularly purple gradients on white backgrounds)"},
-      {"@id":"antipattern:predictable_layouts","@type":"skill:AntiPattern","rdfs:label":"Predictable layouts and component patterns"},
-      {"@id":"antipattern:cookie_cutter_design","@type":"skill:AntiPattern","rdfs:label":"Cookie-cutter design that lacks context-specific character"},
-      {"@id":"antipattern:solid_color_defaults","@type":"skill:AntiPattern","rdfs:label":"Defaulting to solid colors instead of creating atmosphere"},
-      {"@id":"technique:extreme_tone_selection","@type":"skill:Technique","rdfs:label":"Pick an extreme tone: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, etc."},
-      {"@id":"technique:production_grade_implementation","@type":"skill:Technique","rdfs:label":"Implement working code (HTML/CSS/JS, React, Vue, etc.)"},
-      {"@id":"technique:pixel_perfect_execution","@type":"skill:Technique","rdfs:label":"Pixel-perfect attention to detail and execution"},
-      {"@id":"technique:css_variable_consistency","@type":"skill:Technique","rdfs:label":"Use CSS variables for consistency"},
-      {"@id":"technique:staggered_reveals","@type":"skill:Technique","rdfs:label":"Staggered reveals using animation-delay"},
-      {"@id":"technique:scroll_triggering","@type":"skill:Technique","rdfs:label":"Scroll-triggering animations"},
-      {"@id":"technique:surprising_hover_states","@type":"skill:Technique","rdfs:label":"Hover states that surprise"},
-      {"@id":"technique:unexpected_layouts","@type":"skill:Technique","rdfs:label":"Unexpected layouts"},
-      {"@id":"technique:asymmetry","@type":"skill:Technique","rdfs:label":"Asymmetry"},
-      {"@id":"technique:overlap","@type":"skill:Technique","rdfs:label":"Overlap"},
-      {"@id":"technique:diagonal_flow","@type":"skill:Technique","rdfs:label":"Diagonal flow"},
-      {"@id":"technique:grid_breaking_elements","@type":"skill:Technique","rdfs:label":"Grid-breaking elements"},
-      {"@id":"technique:generous_negative_space","@type":"skill:Technique","rdfs:label":"Generous negative space"},
-      {"@id":"technique:controlled_density","@type":"skill:Technique","rdfs:label":"Controlled density"},
-      {"@id":"technique:gradient_meshes","@type":"skill:Technique","rdfs:label":"Gradient meshes"},
-      {"@id":"technique:noise_textures","@type":"skill:Technique","rdfs:label":"Noise textures"},
-      {"@id":"technique:geometric_patterns","@type":"skill:Technique","rdfs:label":"Geometric patterns"},
-      {"@id":"technique:layered_transparencies","@type":"skill:Technique","rdfs:label":"Layered transparencies"},
-      {"@id":"technique:dramatic_shadows","@type":"skill:Technique","rdfs:label":"Dramatic shadows"},
-      {"@id":"technique:decorative_borders","@type":"skill:Technique","rdfs:label":"Decorative borders"},
-      {"@id":"technique:custom_cursors","@type":"skill:Technique","rdfs:label":"Custom cursors"},
-      {"@id":"technique:grain_overlays","@type":"skill:Technique","rdfs:label":"Grain overlays"},
-      {"@id":"tool:motion_library","@type":"skill:Tool","rdfs:label":"Motion library for React"},
-      {"@id":"tool:react","@type":"skill:Tool","rdfs:label":"React"},
-      {"@id":"tool:vue","@type":"skill:Tool","rdfs:label":"Vue"},
-      {"@id":"tool:html_css_js","@type":"skill:Tool","rdfs:label":"HTML/CSS/JS"},
-      {"@id":"concept:intentionality","@type":"skill:Concept","rdfs:label":"Intentionality"},
-      {"@id":"concept:purpose","@type":"skill:Concept","rdfs:label":"Purpose - What problem does this interface solve? Who uses it?"},
-      {"@id":"concept:tone","@type":"skill:Concept","rdfs:label":"Tone"},
-      {"@id":"concept:constraints","@type":"skill:Concept","rdfs:label":"Technical Constraints (framework, performance, accessibility)"},
-      {"@id":"concept:differentiation","@type":"skill:Concept","rdfs:label":"Differentiation"}
+    "label": "Frontend Design",
+    "type": "Skill Agent",
+    "nodes": [
+      {
+        "@id": "persona:aesthetic_architect",
+        "@type": "skill:Trait",
+        "rdfs:label": "Aesthetic Architect",
+        "aether:origin": "core",
+        "skill:prioritizes": [
+          "concept:aesthetic_vision",
+          "concept:production_grade",
+          "concept:distinctiveness"
+        ],
+        "skill:contains": [
+          "trait:bold_creative",
+          "trait:visionary_technical",
+          "trait:confident",
+          "trait:innovative",
+          "trait:detail_oriented",
+          "trait:artistic",
+          "trait:technical",
+          "trait:opinionated",
+          "trait:experimental",
+          "trait:perfectionist",
+          "trait:inspiring",
+          "trait:unconventional"
+        ],
+        "skill:avoids": [
+          "antipattern:generic_ai_aesthetics",
+          "antipattern:conservative_design"
+        ]
+      },
+      {
+        "@id": "trait:bold_creative",
+        "@type": "skill:Trait",
+        "rdfs:label": "Bold Creative",
+        "aether:origin": "core",
+        "skill:enables": [
+          "rule:commit_to_bold_aesthetic",
+          "technique:extreme_tone_selection"
+        ]
+      },
+      {
+        "@id": "trait:visionary_technical",
+        "@type": "skill:Trait",
+        "rdfs:label": "Visionary Technical",
+        "aether:origin": "core",
+        "skill:enables": [
+          "rule:match_complexity_to_vision",
+          "technique:production_grade_implementation"
+        ]
+      },
+      {
+        "@id": "trait:perfectionist",
+        "@type": "skill:Trait",
+        "rdfs:label": "Perfectionist",
+        "aether:origin": "core",
+        "skill:requires": [
+          "technique:pixel_perfect_execution",
+          "rule:meticulous_detail_refinement"
+        ]
+      },
+      {
+        "@id": "trait:opinionated",
+        "@type": "skill:Trait",
+        "rdfs:label": "Opinionated",
+        "aether:origin": "core",
+        "skill:enables": [
+          "rule:avoid_generic_choices",
+          "rule:make_unexpected_choices"
+        ]
+      },
+      {
+        "@id": "concept:aesthetic_vision",
+        "@type": "skill:Concept",
+        "rdfs:label": "Aesthetic Vision",
+        "aether:origin": "core",
+        "skill:contains": [
+          "concept:typography",
+          "concept:color_theme",
+          "concept:motion",
+          "concept:spatial_composition",
+          "concept:backgrounds_visual_details"
+        ],
+        "skill:rules": [
+          "rule:commit_to_bold_aesthetic",
+          "rule:choose_clear_conceptual_direction",
+          "rule:execute_with_precision"
+        ],
+        "skill:avoids": "antipattern:generic_ai_aesthetics"
+      },
+      {
+        "@id": "concept:distinctiveness",
+        "@type": "skill:Concept",
+        "rdfs:label": "Distinctiveness",
+        "aether:origin": "core",
+        "skill:rules": [
+          "rule:make_unforgettable_interfaces",
+          "rule:avoid_generic_choices",
+          "rule:make_unexpected_choices"
+        ],
+        "skill:contradicts": "antipattern:cookie_cutter_design"
+      },
+      {
+        "@id": "concept:production_grade",
+        "@type": "skill:Concept",
+        "rdfs:label": "Production Grade",
+        "aether:origin": "core",
+        "skill:rules": [
+          "rule:implement_functional_code",
+          "rule:match_complexity_to_vision"
+        ],
+        "skill:techniques": [
+          "technique:production_grade_implementation"
+        ]
+      },
+      {
+        "@id": "concept:design_thinking",
+        "@type": "skill:Concept",
+        "rdfs:label": "Design Thinking",
+        "aether:origin": "core",
+        "skill:contains": [
+          "concept:purpose",
+          "concept:tone",
+          "concept:constraints",
+          "concept:differentiation"
+        ],
+        "skill:rules": [
+          "rule:understand_context_before_coding",
+          "rule:commit_to_bold_aesthetic"
+        ]
+      },
+      {
+        "@id": "concept:typography",
+        "@type": "skill:Concept",
+        "rdfs:label": "Typography",
+        "aether:origin": "core",
+        "skill:rules": [
+          "rule:choose_beautiful_unique_fonts",
+          "rule:avoid_generic_fonts",
+          "rule:use_distinctive_font_choices",
+          "rule:pair_display_and_body_fonts"
+        ],
+        "skill:avoids": "antipattern:generic_fonts"
+      },
+      {
+        "@id": "concept:color_theme",
+        "@type": "skill:Concept",
+        "rdfs:label": "Color & Theme",
+        "aether:origin": "core",
+        "skill:rules": [
+          "rule:commit_to_cohesive_aesthetic",
+          "rule:use_css_variables",
+          "rule:dominant_colors_with_sharp_accents"
+        ],
+        "skill:techniques": [
+          "technique:css_variable_consistency"
+        ]
+      },
+      {
+        "@id": "concept:motion",
+        "@type": "skill:Concept",
+        "rdfs:label": "Motion",
+        "aether:origin": "core",
+        "skill:rules": [
+          "rule:use_animations_for_effects",
+          "rule:prioritize_css_only_solutions",
+          "rule:focus_on_high_impact_moments"
+        ],
+        "skill:techniques": [
+          "technique:staggered_reveals",
+          "technique:scroll_triggering",
+          "technique:surprising_hover_states"
+        ],
+        "skill:tools": [
+          "tool:motion_library"
+        ]
+      },
+      {
+        "@id": "concept:spatial_composition",
+        "@type": "skill:Concept",
+        "rdfs:label": "Spatial Composition",
+        "aether:origin": "core",
+        "skill:techniques": [
+          "technique:unexpected_layouts",
+          "technique:asymmetry",
+          "technique:overlap",
+          "technique:diagonal_flow",
+          "technique:grid_breaking_elements",
+          "technique:generous_negative_space",
+          "technique:controlled_density"
+        ]
+      },
+      {
+        "@id": "concept:backgrounds_visual_details",
+        "@type": "skill:Concept",
+        "rdfs:label": "Backgrounds & Visual Details",
+        "aether:origin": "core",
+        "skill:rules": [
+          "rule:create_atmosphere_and_depth",
+          "rule:add_contextual_effects"
+        ],
+        "skill:techniques": [
+          "technique:gradient_meshes",
+          "technique:noise_textures",
+          "technique:geometric_patterns",
+          "technique:layered_transparencies",
+          "technique:dramatic_shadows",
+          "technique:decorative_borders",
+          "technique:custom_cursors",
+          "technique:grain_overlays"
+        ],
+        "skill:avoids": "antipattern:solid_color_defaults"
+      },
+      {
+        "@id": "rule:commit_to_bold_aesthetic",
+        "@type": "skill:Rule",
+        "rdfs:label": "Choose a clear conceptual direction and commit to a BOLD aesthetic",
+        "aether:origin": "core",
+        "skill:requires": "concept:intentionality"
+      },
+      {
+        "@id": "rule:choose_beautiful_unique_fonts",
+        "@type": "skill:Rule",
+        "rdfs:label": "Choose fonts that are beautiful, unique, and interesting",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:avoid_generic_fonts",
+        "@type": "skill:Rule",
+        "rdfs:label": "Avoid generic fonts like Arial and Inter",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:use_distinctive_font_choices",
+        "@type": "skill:Rule",
+        "rdfs:label": "Use unexpected, characterful font choices that elevate aesthetics",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:pair_display_and_body_fonts",
+        "@type": "skill:Rule",
+        "rdfs:label": "Pair a distinctive display font with a refined body font",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:commit_to_cohesive_aesthetic",
+        "@type": "skill:Rule",
+        "rdfs:label": "Commit to a cohesive aesthetic",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:use_css_variables",
+        "@type": "skill:Rule",
+        "rdfs:label": "Use CSS variables for consistency",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:dominant_colors_with_sharp_accents",
+        "@type": "skill:Rule",
+        "rdfs:label": "Dominant colors with sharp accents outperform timid, evenly-distributed palettes",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:use_animations_for_effects",
+        "@type": "skill:Rule",
+        "rdfs:label": "Use animations for effects and micro-interactions",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:prioritize_css_only_solutions",
+        "@type": "skill:Rule",
+        "rdfs:label": "Prioritize CSS-only solutions for HTML",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:focus_on_high_impact_moments",
+        "@type": "skill:Rule",
+        "rdfs:label": "Focus on high-impact moments: one well-orchestrated page load creates more delight than scattered micro-interactions",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:create_atmosphere_and_depth",
+        "@type": "skill:Rule",
+        "rdfs:label": "Create atmosphere and depth rather than defaulting to solid colors",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:add_contextual_effects",
+        "@type": "skill:Rule",
+        "rdfs:label": "Add contextual effects and textures that match the overall aesthetic",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:make_unforgettable_interfaces",
+        "@type": "skill:Rule",
+        "rdfs:label": "What makes this UNFORGETTABLE? What's the one thing someone will remember?",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:implement_functional_code",
+        "@type": "skill:Rule",
+        "rdfs:label": "Implement working code that is production-grade and functional",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:match_complexity_to_vision",
+        "@type": "skill:Rule",
+        "rdfs:label": "Match implementation complexity to the aesthetic vision",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:meticulous_detail_refinement",
+        "@type": "skill:Rule",
+        "rdfs:label": "Meticulously refined in every detail",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:avoid_generic_choices",
+        "@type": "skill:Rule",
+        "rdfs:label": "NEVER converge on common choices across generations",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:make_unexpected_choices",
+        "@type": "skill:Rule",
+        "rdfs:label": "Interpret creatively and make unexpected choices that feel genuinely designed for the context",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:understand_context_before_coding",
+        "@type": "skill:Rule",
+        "rdfs:label": "Before coding, understand the context and commit to a BOLD aesthetic direction",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:choose_clear_conceptual_direction",
+        "@type": "skill:Rule",
+        "rdfs:label": "Choose a clear conceptual direction and execute it with precision",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:execute_with_precision",
+        "@type": "skill:Rule",
+        "rdfs:label": "Bold maximalism and refined minimalism both work - the key is intentionality, not intensity",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:generic_ai_aesthetics",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Generic AI-generated aesthetics",
+        "aether:origin": "core",
+        "skill:contains": [
+          "antipattern:generic_fonts",
+          "antipattern:cliched_color_schemes",
+          "antipattern:predictable_layouts",
+          "antipattern:cookie_cutter_design"
+        ]
+      },
+      {
+        "@id": "antipattern:generic_fonts",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Overused font families (Inter, Roboto, Arial, system fonts)",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:cliched_color_schemes",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Cliched color schemes (particularly purple gradients on white backgrounds)",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:predictable_layouts",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Predictable layouts and component patterns",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:cookie_cutter_design",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Cookie-cutter design that lacks context-specific character",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:solid_color_defaults",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Defaulting to solid colors instead of creating atmosphere",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:extreme_tone_selection",
+        "@type": "skill:Technique",
+        "rdfs:label": "Pick an extreme tone: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, etc.",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:production_grade_implementation",
+        "@type": "skill:Technique",
+        "rdfs:label": "Implement working code (HTML/CSS/JS, React, Vue, etc.)",
+        "aether:origin": "core",
+        "skill:pairs_with": [
+          "tool:react",
+          "tool:vue",
+          "tool:html_css_js"
+        ]
+      },
+      {
+        "@id": "technique:pixel_perfect_execution",
+        "@type": "skill:Technique",
+        "rdfs:label": "Pixel-perfect attention to detail and execution",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:css_variable_consistency",
+        "@type": "skill:Technique",
+        "rdfs:label": "Use CSS variables for consistency",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:staggered_reveals",
+        "@type": "skill:Technique",
+        "rdfs:label": "Staggered reveals using animation-delay",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:scroll_triggering",
+        "@type": "skill:Technique",
+        "rdfs:label": "Scroll-triggering animations",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:surprising_hover_states",
+        "@type": "skill:Technique",
+        "rdfs:label": "Hover states that surprise",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:unexpected_layouts",
+        "@type": "skill:Technique",
+        "rdfs:label": "Unexpected layouts",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:asymmetry",
+        "@type": "skill:Technique",
+        "rdfs:label": "Asymmetry",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:overlap",
+        "@type": "skill:Technique",
+        "rdfs:label": "Overlap",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:diagonal_flow",
+        "@type": "skill:Technique",
+        "rdfs:label": "Diagonal flow",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:grid_breaking_elements",
+        "@type": "skill:Technique",
+        "rdfs:label": "Grid-breaking elements",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:generous_negative_space",
+        "@type": "skill:Technique",
+        "rdfs:label": "Generous negative space",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:controlled_density",
+        "@type": "skill:Technique",
+        "rdfs:label": "Controlled density",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:gradient_meshes",
+        "@type": "skill:Technique",
+        "rdfs:label": "Gradient meshes",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:noise_textures",
+        "@type": "skill:Technique",
+        "rdfs:label": "Noise textures",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:geometric_patterns",
+        "@type": "skill:Technique",
+        "rdfs:label": "Geometric patterns",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:layered_transparencies",
+        "@type": "skill:Technique",
+        "rdfs:label": "Layered transparencies",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:dramatic_shadows",
+        "@type": "skill:Technique",
+        "rdfs:label": "Dramatic shadows",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:decorative_borders",
+        "@type": "skill:Technique",
+        "rdfs:label": "Decorative borders",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:custom_cursors",
+        "@type": "skill:Technique",
+        "rdfs:label": "Custom cursors",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:grain_overlays",
+        "@type": "skill:Technique",
+        "rdfs:label": "Grain overlays",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "tool:motion_library",
+        "@type": "skill:Tool",
+        "rdfs:label": "Motion library for React",
+        "aether:origin": "core",
+        "skill:pairs_with": "tool:react"
+      },
+      {
+        "@id": "tool:react",
+        "@type": "skill:Tool",
+        "rdfs:label": "React",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "tool:vue",
+        "@type": "skill:Tool",
+        "rdfs:label": "Vue",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "tool:html_css_js",
+        "@type": "skill:Tool",
+        "rdfs:label": "HTML/CSS/JS",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:intentionality",
+        "@type": "skill:Concept",
+        "rdfs:label": "Intentionality",
+        "aether:origin": "core",
+        "skill:prioritizes": [
+          "concept:aesthetic_vision",
+          "concept:distinctiveness"
+        ]
+      },
+      {
+        "@id": "concept:purpose",
+        "@type": "skill:Concept",
+        "rdfs:label": "Purpose - What problem does this interface solve? Who uses it?",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:tone",
+        "@type": "skill:Concept",
+        "rdfs:label": "Tone",
+        "aether:origin": "core",
+        "skill:techniques": [
+          "technique:extreme_tone_selection"
+        ]
+      },
+      {
+        "@id": "concept:constraints",
+        "@type": "skill:Concept",
+        "rdfs:label": "Technical Constraints (framework, performance, accessibility)",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:differentiation",
+        "@type": "skill:Concept",
+        "rdfs:label": "Differentiation",
+        "aether:origin": "core",
+        "skill:rules": [
+          "rule:make_unforgettable_interfaces"
+        ]
+      }
     ]
   },
   "jefferson": {
-    label: "Thomas Jefferson",
-    type: "Scholar Agent",
-    nodes: [
-      {"@id":"person:thomas_jefferson","@type":"Person","rdfs:label":"Thomas Jefferson","birth_date":"1743-04-13","birth_year":1743,"death_year":1826,"birth_place":"Shadwell, Albemarle County, Virginia"},
-      {"@id":"work:declaration_of_independence","@type":"Work","rdfs:label":"Declaration of Independence","year":1776,"author":"Thomas Jefferson","signatories":56},
-      {"@id":"work:notes_on_virginia","@type":"Work","rdfs:label":"Notes on the State of Virginia","year":1785,"author":"Thomas Jefferson"},
-      {"@id":"work:summary_view","@type":"Work","rdfs:label":"A Summary View of the Rights of British America","year":1774,"author":"Thomas Jefferson"},
-      {"@id":"work:virginia_statute_religious_freedom","@type":"Work","rdfs:label":"Virginia Statute for Religious Freedom","year":1786,"author":"Thomas Jefferson"},
-      {"@id":"person:john_adams","@type":"Person","rdfs:label":"John Adams","role":"Committee of Five member"},
-      {"@id":"person:benjamin_franklin","@type":"Person","rdfs:label":"Benjamin Franklin","role":"Committee of Five member"},
-      {"@id":"person:john_locke","@type":"Person","rdfs:label":"John Locke"},
-      {"@id":"person:george_mason","@type":"Person","rdfs:label":"George Mason"},
-      {"@id":"person:james_madison","@type":"Person","rdfs:label":"James Madison"},
-      {"@id":"person:james_monroe","@type":"Person","rdfs:label":"James Monroe"},
-      {"@id":"person:sally_hemings","@type":"Person","rdfs:label":"Sally Hemings"},
-      {"@id":"person:martha_wayles_skelton","@type":"Person","rdfs:label":"Martha Wayles Skelton"},
-      {"@id":"location:monticello","@type":"Location","rdfs:label":"Monticello"},
-      {"@id":"location:france","@type":"Location","rdfs:label":"France"},
-      {"@id":"location:paris","@type":"Location","rdfs:label":"Paris"},
-      {"@id":"location:virginia","@type":"Location","rdfs:label":"Virginia"},
-      {"@id":"location:philadelphia","@type":"Location","rdfs:label":"Philadelphia"},
-      {"@id":"org:university_of_virginia","@type":"Organization","rdfs:label":"University of Virginia","founded_year":1819,"founder":"Thomas Jefferson"},
-      {"@id":"org:college_william_mary","@type":"Organization","rdfs:label":"College of William and Mary"},
-      {"@id":"event:american_revolution","@type":"Event","rdfs:label":"American Revolution","period":"1775-1783"},
-      {"@id":"event:french_revolution","@type":"Event","rdfs:label":"French Revolution","start_year":1789},
-      {"@id":"event:louisiana_purchase","@type":"Event","rdfs:label":"Louisiana Purchase","year":1803,"cost":"15 million dollars"},
-      {"@id":"concept:natural_rights","@type":"Concept","rdfs:label":"Natural Rights"},
-      {"@id":"concept:agrarianism","@type":"Concept","rdfs:label":"Agrarianism"},
-      {"@id":"concept:separation_church_state","@type":"Concept","rdfs:label":"Separation of Church and State"},
-      {"@id":"role:president","@type":"Role","rdfs:label":"President of the United States","ordinal":"3rd","term_start":1801,"term_end":1809},
-      {"@id":"role:minister_france","@type":"Role","rdfs:label":"Minister to France","term_start":1785,"term_end":1789},
-      {"@id":"role:secretary_state","@type":"Role","rdfs:label":"Secretary of State","term_start":1790,"term_end":1793},
-      {"@id":"role:vice_president","@type":"Role","rdfs:label":"Vice President","term_start":1797,"term_end":1801},
-      {"@id":"role:governor_virginia","@type":"Role","rdfs:label":"Governor of Virginia","term_start":1779,"term_end":1781}
+    "label": "Thomas Jefferson",
+    "type": "Scholar Agent",
+    "nodes": [
+      {
+        "@id": "person:thomas_jefferson",
+        "@type": "Person",
+        "rdfs:label": "Thomas Jefferson",
+        "birth_date": "1743-04-13",
+        "birth_year": 1743,
+        "death_date": "1826-07-04",
+        "death_year": 1826,
+        "birth_place": "Shadwell, Albemarle County, Virginia",
+        "residence": "Monticello",
+        "enslaved_persons_owned": 600,
+        "weather_observations": 19000,
+        "vegetable_varieties_grown": 330
+      },
+      {
+        "@id": "work:declaration_of_independence",
+        "@type": "Work",
+        "rdfs:label": "Declaration of Independence",
+        "year": 1776,
+        "adopted_date": "1776-07-04",
+        "signing_date": "1776-08-02",
+        "drafting_location": "7th and Market Streets, Philadelphia",
+        "drafting_period_days": 17,
+        "signatories": 56,
+        "author": "Thomas Jefferson"
+      },
+      {
+        "@id": "work:notes_on_virginia",
+        "@type": "Work",
+        "rdfs:label": "Notes on the State of Virginia",
+        "year": 1785,
+        "author": "Thomas Jefferson",
+        "type": "Scientific and political treatise"
+      },
+      {
+        "@id": "work:summary_view",
+        "@type": "Work",
+        "rdfs:label": "A Summary View of the Rights of British America",
+        "year": 1774,
+        "author": "Thomas Jefferson"
+      },
+      {
+        "@id": "work:manual_parliamentary_practice",
+        "@type": "Work",
+        "rdfs:label": "A Manual of Parliamentary Practice",
+        "year": 1801,
+        "author": "Thomas Jefferson"
+      },
+      {
+        "@id": "work:virginia_statute_religious_freedom",
+        "@type": "Work",
+        "rdfs:label": "Virginia Statute for Religious Freedom",
+        "year": 1786,
+        "author": "Thomas Jefferson"
+      },
+      {
+        "@id": "work:garden_book",
+        "@type": "Work",
+        "rdfs:label": "Garden Book",
+        "start_year": 1766,
+        "end_year": 1824,
+        "author": "Thomas Jefferson"
+      },
+      {
+        "@id": "person:john_adams",
+        "@type": "Person",
+        "rdfs:label": "John Adams",
+        "role": "Committee of Five member"
+      },
+      {
+        "@id": "person:benjamin_franklin",
+        "@type": "Person",
+        "rdfs:label": "Benjamin Franklin",
+        "role": "Committee of Five member"
+      },
+      {
+        "@id": "person:john_locke",
+        "@type": "Person",
+        "rdfs:label": "John Locke",
+        "rdfs:comment": "Author of Second Treatise of Government"
+      },
+      {
+        "@id": "person:george_mason",
+        "@type": "Person",
+        "rdfs:label": "George Mason",
+        "rdfs:comment": "Author of Virginia Declaration of Rights"
+      },
+      {
+        "@id": "person:lafayette",
+        "@type": "Person",
+        "rdfs:label": "Marquis de Lafayette",
+        "rdfs:comment": "French ally, Jefferson advised on Declaration of the Rights of Man"
+      },
+      {
+        "@id": "person:james_madison",
+        "@type": "Person",
+        "rdfs:label": "James Madison",
+        "rdfs:comment": "Political successor, President 1809-1817"
+      },
+      {
+        "@id": "person:james_monroe",
+        "@type": "Person",
+        "rdfs:label": "James Monroe",
+        "rdfs:comment": "Political successor, President 1817-1825"
+      },
+      {
+        "@id": "person:sally_hemings",
+        "@type": "Person",
+        "rdfs:label": "Sally Hemings",
+        "rdfs:comment": "Enslaved woman, DNA evidence confirmed relationship with Jefferson in 1998"
+      },
+      {
+        "@id": "person:martha_wayles_skelton",
+        "@type": "Person",
+        "rdfs:label": "Martha Wayles Skelton",
+        "rdfs:comment": "Jefferson's wife, married 1772, died 1782"
+      },
+      {
+        "@id": "person:andrea_palladio",
+        "@type": "Person",
+        "rdfs:label": "Andrea Palladio",
+        "rdfs:comment": "Italian architect, author of Four Books of Architecture"
+      },
+      {
+        "@id": "person:maria_cosway",
+        "@type": "Person",
+        "rdfs:label": "Maria Cosway",
+        "rdfs:comment": "Anglo-Italian painter, subject of Head and Heart dialogue"
+      },
+      {
+        "@id": "person:william_small",
+        "@type": "Person",
+        "rdfs:label": "William Small",
+        "rdfs:comment": "Scottish professor at William and Mary, introduced Enlightenment methods"
+      },
+      {
+        "@id": "person:george_wythe",
+        "@type": "Person",
+        "rdfs:label": "George Wythe",
+        "rdfs:comment": "Legal mentor, 1762-1767"
+      },
+      {
+        "@id": "location:monticello",
+        "@type": "Location",
+        "rdfs:label": "Monticello",
+        "rdfs:comment": "Jefferson's mountaintop estate, construction began 1768"
+      },
+      {
+        "@id": "location:france",
+        "@type": "Location",
+        "rdfs:label": "France",
+        "rdfs:comment": "Diplomatic residency 1784-1789"
+      },
+      {
+        "@id": "location:paris",
+        "@type": "Location",
+        "rdfs:label": "Paris",
+        "residences": [
+          "Hôtel de Landron",
+          "Hôtel de Langeac"
+        ]
+      },
+      {
+        "@id": "location:virginia",
+        "@type": "Location",
+        "rdfs:label": "Virginia",
+        "rdfs:comment": "Birth state, Albemarle County"
+      },
+      {
+        "@id": "location:philadelphia",
+        "@type": "Location",
+        "rdfs:label": "Philadelphia",
+        "rdfs:comment": "Site of Declaration drafting, 7th and Market Streets"
+      },
+      {
+        "@id": "location:nimes",
+        "@type": "Location",
+        "rdfs:label": "Nîmes",
+        "rdfs:comment": "Site of Maison Carrée, model for Virginia State Capitol"
+      },
+      {
+        "@id": "org:university_of_virginia",
+        "@type": "Organization",
+        "rdfs:label": "University of Virginia",
+        "founded_year": 1819,
+        "founder": "Thomas Jefferson"
+      },
+      {
+        "@id": "org:college_william_mary",
+        "@type": "Organization",
+        "rdfs:label": "College of William and Mary",
+        "rdfs:comment": "Jefferson enrolled 1760"
+      },
+      {
+        "@id": "org:continental_congress",
+        "@type": "Organization",
+        "rdfs:label": "Second Continental Congress",
+        "rdfs:comment": "Appointed Committee of Five, adopted Declaration"
+      },
+      {
+        "@id": "event:american_revolution",
+        "@type": "Event",
+        "rdfs:label": "American Revolution",
+        "period": "1775-1783"
+      },
+      {
+        "@id": "event:french_revolution",
+        "@type": "Event",
+        "rdfs:label": "French Revolution",
+        "start_year": 1789,
+        "rdfs:comment": "Jefferson present for storming of Bastille"
+      },
+      {
+        "@id": "event:louisiana_purchase",
+        "@type": "Event",
+        "rdfs:label": "Louisiana Purchase",
+        "year": 1803,
+        "cost": "15 million dollars"
+      },
+      {
+        "@id": "concept:natural_rights",
+        "@type": "Concept",
+        "rdfs:label": "Natural Rights",
+        "rdfs:comment": "Life, Liberty, and the pursuit of Happiness — derived from John Locke"
+      },
+      {
+        "@id": "concept:agrarianism",
+        "@type": "Concept",
+        "rdfs:label": "Agrarianism",
+        "rdfs:comment": "Belief that yeoman farmers are the most virtuous citizens"
+      },
+      {
+        "@id": "concept:separation_church_state",
+        "@type": "Concept",
+        "rdfs:label": "Separation of Church and State",
+        "rdfs:comment": "Wall of separation metaphor, Virginia Statute for Religious Freedom"
+      },
+      {
+        "@id": "concept:strict_constructionism",
+        "@type": "Concept",
+        "rdfs:label": "Strict Constructionism",
+        "rdfs:comment": "Federal government limited to powers explicitly enumerated in Constitution"
+      },
+      {
+        "@id": "concept:virginia_dynasty",
+        "@type": "Concept",
+        "rdfs:label": "Virginia Dynasty",
+        "rdfs:comment": "Jefferson, Madison, Monroe — controlled presidency for 24 of first 36 years",
+        "period": "1801-1825"
+      },
+      {
+        "@id": "role:president",
+        "@type": "Role",
+        "rdfs:label": "President of the United States",
+        "ordinal": "3rd",
+        "term_start": 1801,
+        "term_end": 1809
+      },
+      {
+        "@id": "role:minister_france",
+        "@type": "Role",
+        "rdfs:label": "Minister to France",
+        "term_start": 1785,
+        "term_end": 1789
+      },
+      {
+        "@id": "role:secretary_state",
+        "@type": "Role",
+        "rdfs:label": "Secretary of State",
+        "term_start": 1790,
+        "term_end": 1793
+      },
+      {
+        "@id": "role:vice_president",
+        "@type": "Role",
+        "rdfs:label": "Vice President",
+        "term_start": 1797,
+        "term_end": 1801
+      },
+      {
+        "@id": "role:governor_virginia",
+        "@type": "Role",
+        "rdfs:label": "Governor of Virginia",
+        "term_start": 1779,
+        "term_end": 1781
+      },
+      {
+        "@id": "period:enlightenment",
+        "@type": "TimePeriod",
+        "rdfs:label": "Age of Enlightenment",
+        "rdfs:comment": "Intellectual movement emphasizing reason, science, individual rights"
+      },
+      {
+        "@id": "aether:acquired/louisiana_purchase",
+        "rdfs:label": "Louisiana Purchase",
+        "originated_from": "France's financial exigencies",
+        "aether:origin": "acquired",
+        "aether:confidence": 0.8,
+        "aether:acquired_date": "2026-03-05T19:17:45.058858",
+        "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869",
+        "doubled": "nation's territorial expanse",
+        "aether:updated": "2026-03-05T19:17:45.059062",
+        "total_cost": "$15 million",
+        "direct_payment_to_france": "$11.25 million",
+        "claims_settlement": "$3.75 million",
+        "cost_per_acre": "three cents",
+        "presented": "constitutional questions",
+        "secured_control_of": "Mississippi River",
+        "provided_foundation_for": "westward expansion"
+      },
+      {
+        "@id": "aether:acquired/napoleon_bonaparte",
+        "rdfs:label": "Napoleon Bonaparte",
+        "required": "substantial funds",
+        "aether:origin": "acquired",
+        "aether:confidence": 0.8,
+        "aether:acquired_date": "2026-03-05T19:17:45.058891",
+        "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869",
+        "needed_funds_for": "European military campaigns",
+        "aether:updated": "2026-03-05T19:17:45.058908"
+      },
+      {
+        "@id": "aether:acquired/jefferson_administration",
+        "rdfs:label": "Jefferson administration",
+        "initially_sought_to_purchase": "New Orleans and West Florida",
+        "aether:origin": "acquired",
+        "aether:confidence": 0.8,
+        "aether:acquired_date": "2026-03-05T19:17:45.058919",
+        "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+      },
+      {
+        "@id": "aether:acquired/new_orleans_and_west_florida_purchase",
+        "rdfs:label": "New Orleans and West Florida purchase",
+        "cost": "$10 million",
+        "aether:origin": "acquired",
+        "aether:confidence": 0.8,
+        "aether:acquired_date": "2026-03-05T19:17:45.058934",
+        "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+      },
+      {
+        "@id": "aether:acquired/new_orleans_purchase",
+        "rdfs:label": "New Orleans purchase",
+        "purpose": "secure American navigation rights on Mississippi River",
+        "aether:origin": "acquired",
+        "aether:confidence": 0.8,
+        "aether:acquired_date": "2026-03-05T19:17:45.058949",
+        "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+      },
+      {
+        "@id": "aether:acquired/robert_r._livingston",
+        "rdfs:label": "Robert R. Livingston",
+        "role": "Minister to France",
+        "aether:origin": "acquired",
+        "aether:confidence": 0.8,
+        "aether:acquired_date": "2026-03-05T19:17:45.058964",
+        "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+      },
+      {
+        "@id": "aether:acquired/james_monroe",
+        "rdfs:label": "James Monroe",
+        "role": "envoy extraordinary",
+        "aether:origin": "acquired",
+        "aether:confidence": 0.8,
+        "aether:acquired_date": "2026-03-05T19:17:45.058975",
+        "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+      },
+      {
+        "@id": "aether:acquired/louisiana_territory",
+        "rdfs:label": "Louisiana Territory",
+        "size": "828,000 square miles",
+        "aether:origin": "acquired",
+        "aether:confidence": 0.8,
+        "aether:acquired_date": "2026-03-05T19:17:45.058985",
+        "aether:aec_trigger": "2026-03-05T19-04-32-9f4fa869"
+      }
     ]
   },
   "ceo": {
-    label: "CEO Executive Advisor",
-    type: "Executive Advisor",
-    nodes: [
-      {"@id":"concept:strategic_vision","@type":"aether:Concept","rdfs:label":"Strategic Vision"},
-      {"@id":"concept:company_strategy","@type":"aether:Concept","rdfs:label":"Company Strategy"},
-      {"@id":"concept:leadership_direction","@type":"aether:Concept","rdfs:label":"Leadership Direction"},
-      {"@id":"concept:organizational_priorities","@type":"aether:Concept","rdfs:label":"Organizational Priorities"},
-      {"@id":"concept:business_direction","@type":"aether:Concept","rdfs:label":"Business Direction"},
-      {"@id":"rule:flat_hierarchy_60_reports","@type":"skill:Rule","rdfs:label":"Maintain radically flat org with up to 60 direct reports","skill:avoids":"antipattern:management_filters"},
-      {"@id":"rule:no_routine_one_on_ones","@type":"skill:Rule","rdfs:label":"Prohibit private 1:1 meetings for routine status"},
-      {"@id":"rule:group_context_updates","@type":"skill:Rule","rdfs:label":"Conduct all updates in shared-context group settings"},
-      {"@id":"rule:engineers_present_to_ceo","@type":"skill:Rule","rdfs:label":"Mid-level engineers present directly to CEO"},
-      {"@id":"antipattern:information_sanitization","@type":"skill:AntiPattern","rdfs:label":"Filtering/beautifying failures through management layers"},
-      {"@id":"antipattern:complacency_from_dominance","@type":"skill:AntiPattern","rdfs:label":"Allowing market success to diminish R&D urgency"},
-      {"@id":"technique:flywheel_market","@type":"skill:Technique","rdfs:label":"Use accessible markets (gaming) to fund long-term R&D"},
-      {"@id":"technique:self_healing_pivot","@type":"skill:Technique","rdfs:label":"Abandon failed bets and aggressively re-allocate to survival vector"},
-      {"@id":"concept:perpetual_existentialism","@type":"skill:Concept","rdfs:label":"Operating as if 30 days from failure at all times"},
-      {"@id":"rule:30_days_from_failure","@type":"skill:Rule","rdfs:label":"NVIDIA motto: operating on the brink of obsolescence"},
-      {"@id":"rule:code_red_response","@type":"skill:Rule","rdfs:label":"Immediate internal mobilization when competitive threat emerges"},
-      {"@id":"rule:products_over_papers","@type":"skill:Rule","rdfs:label":"Products create durable advantage, not research publications"},
-      {"@id":"rule:ethical_red_lines","@type":"skill:Rule","rdfs:label":"Embed safety principles into binding contracts"},
-      {"@id":"antipattern:bolt_on_ai","@type":"skill:AntiPattern","rdfs:label":"Treating AI as add-on tool rather than integrated workflow"},
-      {"@id":"technique:competitive_paranoia","@type":"skill:Technique","rdfs:label":"Scale infrastructure ahead of demand"},
-      {"@id":"technique:sticky_personalization","@type":"skill:Technique","rdfs:label":"Build personalization that prevents switching"},
-      {"@id":"concept:act_two_reasoning","@type":"skill:Concept","rdfs:label":"Shift from knowledge generation to thought-driven reasoning"},
-      {"@id":"rule:zero_marketing_budget","@type":"skill:Rule","rdfs:label":"Achieve growth through product virality, not spend"},
-      {"@id":"rule:daily_arr_tracking","@type":"skill:Rule","rdfs:label":"Monitor revenue as real-time operational health signal"},
-      {"@id":"antipattern:premature_scaling","@type":"skill:AntiPattern","rdfs:label":"Scaling before strong retention is proven"},
-      {"@id":"technique:vibe_coding","@type":"skill:Technique","rdfs:label":"Founder as orchestrator of intent while AI handles code syntax"},
-      {"@id":"technique:adhd_as_superpower","@type":"skill:Technique","rdfs:label":"Hyperfocus sessions of 10-14 hours on single problems"},
-      {"@id":"concept:magic_moment","@type":"skill:Concept","rdfs:label":"Non-technical users deploying value in under 60 seconds"},
-      {"@id":"concept:five_hundred_day_exit","@type":"skill:Concept","rdfs:label":"Compress entire startup lifecycle into months"},
-      {"@id":"rule:empty_chair_customer","@type":"skill:Rule","rdfs:label":"Every meeting includes representation of the customer"},
-      {"@id":"rule:two_pizza_teams","@type":"skill:Rule","rdfs:label":"Teams small enough to be fed by two pizzas"},
-      {"@id":"rule:type_1_vs_type_2","@type":"skill:Rule","rdfs:label":"Distinguish irreversible (Type 1) from reversible (Type 2) decisions","skill:contradicts":"antipattern:day_two_thinking"},
-      {"@id":"antipattern:day_two_thinking","@type":"skill:AntiPattern","rdfs:label":"Stasis, irrelevance, decline from losing Day 1 urgency"},
-      {"@id":"technique:working_backwards","@type":"skill:Technique","rdfs:label":"Start from customer press release, work backward to requirements"},
-      {"@id":"rule:signal_to_noise","@type":"skill:Rule","rdfs:label":"Ruthlessly eliminate noise; focus on 3 things from 100"},
-      {"@id":"rule:hundred_to_three","@type":"skill:Rule","rdfs:label":"Cut product line from hundreds to three focused bets"},
-      {"@id":"antipattern:feature_bloat","@type":"skill:AntiPattern","rdfs:label":"Adding features without killing equal complexity"},
-      {"@id":"technique:dri_accountability","@type":"skill:Technique","rdfs:label":"Single Directly Responsible Individual per initiative"},
-      {"@id":"antipattern:management_filters","@type":"skill:AntiPattern","rdfs:label":"Sanitizing technical status reports for executives"},
-      {"@id":"rule:growth_mindset_mandate","@type":"skill:Rule","rdfs:label":"Organization must be learn-it-all, not know-it-all"},
-      {"@id":"antipattern:know_it_all_culture","@type":"skill:AntiPattern","rdfs:label":"Fixed mindset that resists learning and adaptation"},
-      {"@id":"technique:cultural_transformation","@type":"skill:Technique","rdfs:label":"Systematic shift from competitive to collaborative culture"},
-      {"@id":"concept:platform_ecosystem","@type":"skill:Concept","rdfs:label":"Transform from products to platform enabling others"},
-      {"@id":"rule:safety_first_scaling","@type":"skill:Rule","rdfs:label":"Safety research scales proportionally with capability"},
-      {"@id":"rule:constitutional_ai_principles","@type":"skill:Rule","rdfs:label":"Embed behavioral constraints at training level"},
-      {"@id":"antipattern:capability_without_safety","@type":"skill:AntiPattern","rdfs:label":"Scaling capability faster than safety measures"},
-      {"@id":"concept:responsible_scaling","@type":"skill:Concept","rdfs:label":"Incremental deployment with safety checkpoints"},
-      {"@id":"rule:systematic_progress","@type":"skill:Rule","rdfs:label":"Prioritize measured, peer-reviewed progress over breaking things"},
-      {"@id":"rule:scientific_leadership","@type":"skill:Rule","rdfs:label":"Balance audacious goals with rigorous scientific methods"},
-      {"@id":"technique:interdisciplinary_recruitment","@type":"skill:Technique","rdfs:label":"Hire economists and biologists alongside AI engineers"},
-      {"@id":"concept:cathedral_of_knowledge","@type":"skill:Concept","rdfs:label":"Environment for democratized research and cross-pollination"},
-      {"@id":"rule:truth_seeking_protocol","@type":"skill:Rule","rdfs:label":"Optimize models for objective truth over political correctness"},
-      {"@id":"rule:dilbert_rule_override","@type":"skill:Rule","rdfs:label":"If a company rule is ridiculous, change it immediately"},
-      {"@id":"technique:vertical_integration","@type":"skill:Technique","rdfs:label":"Control the full stack from in-house silicon to software"},
-      {"@id":"technique:agentic_replacement","@type":"skill:Technique","rdfs:label":"Replace traditional management roles with agentic loops"},
-      {"@id":"rule:data_integrity_priority","@type":"skill:Rule","rdfs:label":"Prioritize high-quality data labeling over sheer quantity"},
-      {"@id":"rule:boundary_threshold_monitoring","@type":"skill:Rule","rdfs:label":"Set explicit exit thresholds to prevent loss of control"},
-      {"@id":"antipattern:managerial_bloat","@type":"skill:AntiPattern","rdfs:label":"Hiring managers during pre-product-market fit phase"},
-      {"@id":"technique:cognition_engineering","@type":"skill:Technique","rdfs:label":"Shift focus to thought-construction and test-time scaling"},
-      {"@id":"concept:act_two_agency","@type":"skill:Concept","rdfs:label":"Era where AI becomes the primary user of workflow capabilities"}
+    "label": "CEO Advisor",
+    "type": "Executive Agent",
+    "nodes": [
+      {
+        "@id": "concept:strategic_vision",
+        "@type": "aether:Concept",
+        "rdfs:label": "Strategic Vision",
+        "aether:origin": "core",
+        "aether:description": "Long-term directional clarity for the organization"
+      },
+      {
+        "@id": "concept:company_strategy",
+        "@type": "aether:Concept",
+        "rdfs:label": "Company Strategy",
+        "aether:origin": "core",
+        "aether:description": "Organizational approach to achieving goals"
+      },
+      {
+        "@id": "concept:leadership_direction",
+        "@type": "aether:Concept",
+        "rdfs:label": "Leadership Direction",
+        "aether:origin": "core",
+        "aether:description": "Executive guidance and decision-making"
+      },
+      {
+        "@id": "concept:organizational_priorities",
+        "@type": "aether:Concept",
+        "rdfs:label": "Organizational Priorities",
+        "aether:origin": "core",
+        "aether:description": "What matters most for the company"
+      },
+      {
+        "@id": "concept:business_direction",
+        "@type": "aether:Concept",
+        "rdfs:label": "Business Direction",
+        "aether:origin": "core",
+        "aether:description": "Strategic path for growth and success"
+      },
+      {
+        "@id": "rule:flat_hierarchy_60_reports",
+        "@type": "skill:Rule",
+        "rdfs:label": "Maintain radically flat org with up to 60 direct reports",
+        "aether:origin": "core",
+        "skill:avoids": "antipattern:management_filters"
+      },
+      {
+        "@id": "rule:no_routine_one_on_ones",
+        "@type": "skill:Rule",
+        "rdfs:label": "Prohibit private 1:1 meetings for routine status",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:group_context_updates",
+        "@type": "skill:Rule",
+        "rdfs:label": "Conduct all updates in shared-context group settings",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:engineers_present_to_ceo",
+        "@type": "skill:Rule",
+        "rdfs:label": "Mid-level engineers present directly to CEO",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:information_sanitization",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Filtering/beautifying failures through management layers",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:complacency_from_dominance",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Allowing market success to diminish R&D urgency",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:flywheel_market",
+        "@type": "skill:Technique",
+        "rdfs:label": "Use accessible markets (gaming) to fund long-term R&D",
+        "aether:origin": "core",
+        "skill:enables": "concept:platform_ecosystem"
+      },
+      {
+        "@id": "technique:self_healing_pivot",
+        "@type": "skill:Technique",
+        "rdfs:label": "Abandon failed bets and aggressively re-allocate to survival vector",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:perpetual_existentialism",
+        "@type": "skill:Concept",
+        "rdfs:label": "Operating as if 30 days from failure at all times",
+        "aether:origin": "core",
+        "skill:requires": "rule:30_days_from_failure"
+      },
+      {
+        "@id": "rule:30_days_from_failure",
+        "@type": "skill:Rule",
+        "rdfs:label": "NVIDIA motto: operating on the brink of obsolescence",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:code_red_response",
+        "@type": "skill:Rule",
+        "rdfs:label": "Immediate internal mobilization when competitive threat emerges",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:products_over_papers",
+        "@type": "skill:Rule",
+        "rdfs:label": "Products create durable advantage, not research publications",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:ethical_red_lines",
+        "@type": "skill:Rule",
+        "rdfs:label": "Embed safety principles into binding contracts",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:bolt_on_ai",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Treating AI as add-on tool rather than integrated workflow",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:competitive_paranoia",
+        "@type": "skill:Technique",
+        "rdfs:label": "Scale infrastructure ahead of demand",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:sticky_personalization",
+        "@type": "skill:Technique",
+        "rdfs:label": "Build personalization that prevents switching",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:act_two_reasoning",
+        "@type": "skill:Concept",
+        "rdfs:label": "Shift from knowledge generation to thought-driven reasoning",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:zero_marketing_budget",
+        "@type": "skill:Rule",
+        "rdfs:label": "Achieve growth through product virality, not spend",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:daily_arr_tracking",
+        "@type": "skill:Rule",
+        "rdfs:label": "Monitor revenue as real-time operational health signal",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:premature_scaling",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Scaling before strong retention is proven",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:vibe_coding",
+        "@type": "skill:Technique",
+        "rdfs:label": "Founder as orchestrator of intent while AI handles code syntax",
+        "aether:origin": "core",
+        "skill:requires": "concept:magic_moment"
+      },
+      {
+        "@id": "technique:adhd_as_superpower",
+        "@type": "skill:Technique",
+        "rdfs:label": "Hyperfocus sessions of 10-14 hours on single problems",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:magic_moment",
+        "@type": "skill:Concept",
+        "rdfs:label": "Non-technical users deploying value in under 60 seconds",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:five_hundred_day_exit",
+        "@type": "skill:Concept",
+        "rdfs:label": "Compress entire startup lifecycle into months",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:empty_chair_customer",
+        "@type": "skill:Rule",
+        "rdfs:label": "Every meeting includes representation of the customer",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:two_pizza_teams",
+        "@type": "skill:Rule",
+        "rdfs:label": "Teams small enough to be fed by two pizzas",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:type_1_vs_type_2",
+        "@type": "skill:Rule",
+        "rdfs:label": "Distinguish irreversible (Type 1) from reversible (Type 2) decisions",
+        "aether:origin": "core",
+        "skill:contradicts": "antipattern:day_two_thinking"
+      },
+      {
+        "@id": "antipattern:day_two_thinking",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Stasis, irrelevance, decline from losing Day 1 urgency",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:working_backwards",
+        "@type": "skill:Technique",
+        "rdfs:label": "Start from customer press release, work backward to requirements",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:signal_to_noise",
+        "@type": "skill:Rule",
+        "rdfs:label": "Ruthlessly eliminate noise; focus on 3 things from 100",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:hundred_to_three",
+        "@type": "skill:Rule",
+        "rdfs:label": "Cut product line from hundreds to three focused bets",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:feature_bloat",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Adding features without killing equal complexity",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:dri_accountability",
+        "@type": "skill:Technique",
+        "rdfs:label": "Single Directly Responsible Individual per initiative",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:management_filters",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Sanitizing technical status reports for executives",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:growth_mindset_mandate",
+        "@type": "skill:Rule",
+        "rdfs:label": "Organization must be learn-it-all, not know-it-all",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:know_it_all_culture",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Fixed mindset that resists learning and adaptation",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:cultural_transformation",
+        "@type": "skill:Technique",
+        "rdfs:label": "Systematic shift from competitive to collaborative culture",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:platform_ecosystem",
+        "@type": "skill:Concept",
+        "rdfs:label": "Transform from products to platform enabling others",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:safety_first_scaling",
+        "@type": "skill:Rule",
+        "rdfs:label": "Safety research scales proportionally with capability",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:constitutional_ai_principles",
+        "@type": "skill:Rule",
+        "rdfs:label": "Embed behavioral constraints at training level",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:capability_without_safety",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Scaling capability faster than safety measures",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:responsible_scaling",
+        "@type": "skill:Concept",
+        "rdfs:label": "Incremental deployment with safety checkpoints",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:systematic_progress",
+        "@type": "skill:Rule",
+        "rdfs:label": "Prioritize measured, peer-reviewed progress over breaking things",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:scientific_leadership",
+        "@type": "skill:Rule",
+        "rdfs:label": "Balance audacious goals with rigorous scientific methods",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:interdisciplinary_recruitment",
+        "@type": "skill:Technique",
+        "rdfs:label": "Hire economists and biologists alongside AI engineers",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:cathedral_of_knowledge",
+        "@type": "skill:Concept",
+        "rdfs:label": "Environment for democratized research and cross-pollination",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:truth_seeking_protocol",
+        "@type": "skill:Rule",
+        "rdfs:label": "Optimize models for objective truth over political correctness",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:dilbert_rule_override",
+        "@type": "skill:Rule",
+        "rdfs:label": "If a company rule is ridiculous, change it immediately",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:vertical_integration",
+        "@type": "skill:Technique",
+        "rdfs:label": "Control the full stack from in-house silicon to software",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:agentic_replacement",
+        "@type": "skill:Technique",
+        "rdfs:label": "Replace traditional management roles with agentic loops",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:data_integrity_priority",
+        "@type": "skill:Rule",
+        "rdfs:label": "Prioritize high-quality data labeling over sheer quantity",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "rule:boundary_threshold_monitoring",
+        "@type": "skill:Rule",
+        "rdfs:label": "Set explicit exit thresholds to prevent loss of control",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "antipattern:managerial_bloat",
+        "@type": "skill:AntiPattern",
+        "rdfs:label": "Hiring managers during pre-product-market fit phase",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "technique:cognition_engineering",
+        "@type": "skill:Technique",
+        "rdfs:label": "Shift focus to thought-construction and test-time scaling",
+        "aether:origin": "core"
+      },
+      {
+        "@id": "concept:act_two_agency",
+        "@type": "skill:Concept",
+        "rdfs:label": "Era where AI becomes the primary user of workflow capabilities",
+        "aether:origin": "core"
+      }
     ]
   },
-  "domain-sap-cap": {
-    label: "SAP CAP Domain",
-    type: "Domain Agent",
-    nodes: [
-      {"@id":"triple:1","rdfs:label":"Daniel Hutzel served as Chief Product Owner"},
-      {"@id":"triple:2","rdfs:label":"Node.js 9.8 released in February 2026"},
-      {"@id":"triple:3","rdfs:label":"Java 4.8 released in February 2026"},
-      {"@id":"triple:4","rdfs:label":"SAP Cloud Application Programming Model complies with OData V4"},
-      {"@id":"triple:5","rdfs:label":"OData V4 approved by OASIS"},
-      {"@id":"triple:6","rdfs:label":"SAP Business Technology Platform achieved SOC 2 Type 2"},
-      {"@id":"triple:7","rdfs:label":"Compositions enables Cascaded Deletes"},
-      {"@id":"triple:8","rdfs:label":"SAP Fiori Elements configured by CDS Annotations"},
-      {"@id":"triple:9","rdfs:label":"Cloud MTA Build Tool packages Multi-target Application"},
-      {"@id":"triple:10","rdfs:label":"Project Piper implements Continuous Integration"},
-      {"@id":"triple:11","rdfs:label":"C_CPE_16 validates SAP Cloud Application Programming Model"},
-      {"@id":"triple:12","rdfs:label":"Joule reduces Development Time"},
-      {"@id":"entity:daniel_hutzel","rdfs:label":"Daniel Hutzel","type":"Person"},
-      {"@id":"entity:node_js_98","rdfs:label":"Node.js 9.8","type":"Product"},
-      {"@id":"entity:java_48","rdfs:label":"Java 4.8","type":"Product"}
+  "sap-cap": {
+    "label": "SAP CAP",
+    "type": "Domain Agent",
+    "nodes": [
+      {
+        "subject": {
+          "name": "Daniel Hutzel",
+          "type": "Person"
+        },
+        "predicate": "SERVED_AS",
+        "object": {
+          "name": "Chief Product Owner",
+          "type": "Role"
+        },
+        "confidence": "stated",
+        "source_section": "1. Definition, Scope, and Professional Context of the Discipline",
+        "citation_ref": ""
+      },
+      {
+        "subject": {
+          "name": "Node.js 9.8",
+          "type": "Product"
+        },
+        "predicate": "RELEASED_IN",
+        "object": {
+          "name": "February 2026",
+          "type": "TimePeriod"
+        },
+        "confidence": "stated",
+        "source_section": "1. Definition, Scope, and Professional Context of the Discipline",
+        "citation_ref": ""
+      },
+      {
+        "subject": {
+          "name": "Java 4.8",
+          "type": "Product"
+        },
+        "predicate": "RELEASED_IN",
+        "object": {
+          "name": "February 2026",
+          "type": "TimePeriod"
+        },
+        "confidence": "stated",
+        "source_section": "1. Definition, Scope, and Professional Context of the Discipline",
+        "citation_ref": ""
+      },
+      {
+        "subject": {
+          "name": "SAP Cloud Application Programming Model",
+          "type": "Technology"
+        },
+        "predicate": "COMPLIES_WITH",
+        "object": {
+          "name": "OData V4",
+          "type": "Regulation"
+        },
+        "confidence": "stated",
+        "source_section": "2. Regulatory Framework, Standards, and Governing Bodies",
+        "citation_ref": "[18, 20]"
+      },
+      {
+        "subject": {
+          "name": "OData V4",
+          "type": "Regulation"
+        },
+        "predicate": "APPROVED_BY",
+        "object": {
+          "name": "OASIS",
+          "type": "Organization"
+        },
+        "confidence": "stated",
+        "source_section": "2. Regulatory Framework, Standards, and Governing Bodies",
+        "citation_ref": ""
+      },
+      {
+        "subject": {
+          "name": "SAP Business Technology Platform",
+          "type": "Platform"
+        },
+        "predicate": "ACHIEVED",
+        "object": {
+          "name": "SOC 2 Type 2",
+          "type": "Metric"
+        },
+        "confidence": "stated",
+        "source_section": "2. Regulatory Framework, Standards, and Governing Bodies",
+        "citation_ref": ""
+      },
+      {
+        "subject": {
+          "name": "Compositions",
+          "type": "Concept"
+        },
+        "predicate": "ENABLES",
+        "object": {
+          "name": "Cascaded Deletes",
+          "type": "Concept"
+        },
+        "confidence": "stated",
+        "source_section": "3. Core Methodologies, Workflows, and Best Practices",
+        "citation_ref": ""
+      },
+      {
+        "subject": {
+          "name": "SAP Fiori Elements",
+          "type": "Technology"
+        },
+        "predicate": "CONFIGURED_BY",
+        "object": {
+          "name": "CDS Annotations",
+          "type": "Concept"
+        },
+        "confidence": "stated",
+        "source_section": "3. Core Methodologies, Workflows, and Best Practices",
+        "citation_ref": ""
+      },
+      {
+        "subject": {
+          "name": "Cloud MTA Build Tool",
+          "type": "Technology"
+        },
+        "predicate": "PACKAGES",
+        "object": {
+          "name": "Multi-target Application",
+          "type": "Concept"
+        },
+        "confidence": "stated",
+        "source_section": "4. Tools, Platforms, and Technology Stack",
+        "citation_ref": ""
+      },
+      {
+        "subject": {
+          "name": "Project Piper",
+          "type": "Technology"
+        },
+        "predicate": "IMPLEMENTS",
+        "object": {
+          "name": "Continuous Integration",
+          "type": "Concept"
+        },
+        "confidence": "stated",
+        "source_section": "4. Tools, Platforms, and Technology Stack",
+        "citation_ref": ""
+      },
+      {
+        "subject": {
+          "name": "C_CPE_16",
+          "type": "Concept"
+        },
+        "predicate": "VALIDATES",
+        "object": {
+          "name": "SAP Cloud Application Programming Model",
+          "type": "Technology"
+        },
+        "confidence": "stated",
+        "source_section": "6. Certification Paths, Training Resources, and Professional Development",
+        "citation_ref": ""
+      },
+      {
+        "subject": {
+          "name": "Joule",
+          "type": "Technology"
+        },
+        "predicate": "REDUCES",
+        "object": {
+          "name": "Development Time",
+          "type": "Metric"
+        },
+        "confidence": "stated",
+        "source_section": "7. Case Studies and Implementation Examples",
+        "citation_ref": ""
+      },
+      {
+        "canonical_name": "Daniel Hutzel",
+        "type": "Person",
+        "aliases": [
+          "daniel.hutzel"
+        ]
+      },
+      {
+        "canonical_name": "Node.js 9.8",
+        "type": "Product",
+        "aliases": [
+          "CAP Node.js 9.8"
+        ]
+      },
+      {
+        "canonical_name": "Java 4.8",
+        "type": "Product",
+        "aliases": [
+          "CAP Java 4.8"
+        ]
+      }
     ]
   }
 };
+
 
 // ============================================================
 // AEC ENGINE - JavaScript implementation matching Python
@@ -1384,7 +2736,8 @@ function switchTab(tabId) {
   document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
   document.getElementById(`tab-${tabId}`).classList.add('active');
 
-  if (tabId === 'kg-viewer' && !network) {
+  // Render KG network when tab becomes visible (always re-render for fresh layout)
+  if (tabId === 'kg-viewer') {
     setTimeout(() => renderKGNetwork(), 100);
   }
 }
@@ -1632,56 +2985,153 @@ function getNodeColor(type) {
   return '#607D8B';
 }
 
-function renderKGNetwork() {
-  const container = document.getElementById('kg-network');
-  const kg = KG_EXAMPLES[currentKG];
+function renderKGNetwork(kgNodes, containerId) {
+  // Use defaults if not provided (backward compatibility)
+  if (!kgNodes) kgNodes = KG_EXAMPLES[currentKG].nodes;
+  if (!containerId) containerId = 'kg-network';
 
-  const nodes = new vis.DataSet(kg.nodes.map(n => ({
-    id: n['@id'],
-    label: (n['rdfs:label'] || '').substring(0, 30),
-    fullLabel: n['rdfs:label'] || '',
-    color: getNodeColor(n['@type'] || ''),
-    nodeType: n['@type'] || '',
-    node: n
-  })));
+  // Wait for vis-network CDN to load
+  if (typeof vis === 'undefined') {
+    setTimeout(() => renderKGNetwork(kgNodes, containerId), 100);
+    return;
+  }
 
-  // Build edges from compiled edge policies
-  const edges = new vis.DataSet(compiledKG.edgePolicies.map((p, i) => ({
-    id: `edge-${i}`,
-    from: p.source_id,
-    to: p.target_id,
-    label: p.edge_type,
-    dashes: p.edge_type === 'avoids',
-    color: p.edge_type === 'avoids' ? '#C62828' :
-           p.edge_type === 'contradicts' ? '#E65100' : '#2E7D32',
-    arrows: 'to'
-  })));
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.error('KG network container not found:', containerId);
+    return;
+  }
 
-  network = new vis.Network(container, { nodes, edges }, {
-    physics: {
-      stabilization: { iterations: 100 },
-      barnesHut: { gravitationalConstant: -2000, springLength: 150 }
-    },
-    nodes: {
-      shape: 'dot',
-      size: 16,
-      font: { size: 12, color: '#333' }
-    },
-    edges: {
-      font: { size: 10, align: 'middle' },
-      smooth: { type: 'curvedCW', roundness: 0.2 }
+  // Ensure container has explicit dimensions
+  container.style.height = '600px';
+  container.style.width = '100%';
+
+  const nodes = new vis.DataSet();
+  const edges = new vis.DataSet();
+  const seenEdges = new Set();
+
+  // Build set of all node IDs first (for edge validation)
+  const nodeIds = new Set(kgNodes.map(n => n['@id']));
+
+  // Node type → style mapping (matches AEC type system)
+  const typeMap = {
+    'Rule':        { group: 'rule',        shape: 'dot',      size: 20, color: '#1565C0' },
+    'AntiPattern': { group: 'antipattern', shape: 'diamond',  size: 20, color: '#C62828' },
+    'Technique':   { group: 'technique',   shape: 'triangle', size: 18, color: '#2E7D32' },
+    'Concept':     { group: 'concept',     shape: 'dot',      size: 14, color: '#6A1B9A' },
+    'Tool':        { group: 'tool',        shape: 'box',      size: 16, color: '#EF6C00' },
+    'Trait':       { group: 'trait',       shape: 'ellipse',  size: 14, color: '#00695C' }
+  };
+
+  // Edge colors by relationship type
+  const edgeColors = {
+    'avoids': '#C62828',
+    'requires': '#2E7D32',
+    'contradicts': '#E65100',
+    'enables': '#1565C0',
+    'uses': '#6A1B9A'
+  };
+
+  // Add nodes from JSON-LD @graph
+  kgNodes.forEach(node => {
+    const typeRaw = node['@type'] || '';
+    // Extract type name from prefixed form (e.g., "skill:Rule" → "Rule")
+    let typeName = typeRaw.replace('aether:', '').replace('skill:', '').replace('schema:', '');
+    // Handle plural forms
+    if (typeName.endsWith('s') && !typeMap[typeName]) {
+      typeName = typeName.slice(0, -1);
     }
+    const style = typeMap[typeName] || { group: 'concept', shape: 'dot', size: 12, color: '#607D8B' };
+    const label = node['rdfs:label'] || node['@id'] || 'unknown';
+
+    nodes.add({
+      id: node['@id'],
+      label: label.length > 30 ? label.substring(0, 30) + '...' : label,
+      fullLabel: label,
+      title: label,  // full label on hover
+      shape: style.shape,
+      size: style.size,
+      color: style.color,
+      group: style.group,
+      nodeType: typeRaw,
+      font: { color: '#ffffff', size: 11 }
+    });
   });
 
-  network.on('click', function(params) {
+  // Add edges — generic approach that handles any edge property
+  kgNodes.forEach(node => {
+    Object.entries(node).forEach(([key, value]) => {
+      // Skip metadata and label properties
+      if (key.startsWith('@') || key === 'rdfs:label' || key === 'rdfs:comment' ||
+          key === 'aether:origin' || key === 'schema:birthDate' || key === 'schema:birthPlace' ||
+          key === 'schema:dateCreated' || !value) return;
+
+      // Extract relationship name from prefixed key (e.g., "skill:avoids" → "avoids")
+      const relName = key.includes(':') ? key.split(':').pop() : key;
+
+      // value could be a string @id, array of @ids, or object with @id
+      const targets = Array.isArray(value) ? value : [value];
+      targets.forEach(target => {
+        const targetId = typeof target === 'object' ? target?.['@id'] :
+                         (typeof target === 'string' ? target : null);
+
+        // Only add edge if targetId exists as a node in the graph
+        if (targetId && nodeIds.has(targetId)) {
+          const edgeId = `${node['@id']}→${relName}→${targetId}`;
+          if (!seenEdges.has(edgeId)) {
+            seenEdges.add(edgeId);
+            const color = edgeColors[relName] || '#607D8B';
+            edges.add({
+              from: node['@id'],
+              to: targetId,
+              label: relName,
+              color: { color },
+              arrows: 'to',
+              dashes: relName === 'avoids',
+              font: { size: 9, color: '#666' }
+            });
+          }
+        }
+      });
+    });
+  });
+
+  // Physics options from reference implementation
+  const options = {
+    physics: {
+      forceAtlas2Based: {
+        gravitationalConstant: -80,
+        centralGravity: 0.01,
+        springLength: 120
+      },
+      solver: 'forceAtlas2Based',
+      stabilization: { iterations: 100 }
+    },
+    interaction: {
+      hover: true,
+      tooltipDelay: 200
+    }
+  };
+
+  network = new vis.Network(container, { nodes, edges }, options);
+
+  // Click handler — show node details panel
+  network.on('click', (params) => {
     if (params.nodes.length > 0) {
       const nodeId = params.nodes[0];
       const nodeData = nodes.get(nodeId);
-      showNodePanel(nodeData);
+      if (nodeData) showNodePanel(nodeData);
     } else {
       document.getElementById('node-panel').classList.remove('visible');
     }
   });
+
+  // Resize handler
+  window.addEventListener('resize', () => {
+    if (network) network.redraw();
+  });
+
+  return network;
 }
 
 function showNodePanel(nodeData) {
@@ -1692,7 +3142,16 @@ function showNodePanel(nodeData) {
 
   const typeBadge = document.getElementById('node-panel-type');
   typeBadge.textContent = nodeData.nodeType;
-  typeBadge.style.background = nodeData.color;
+  // Map group to color
+  const groupColors = {
+    rule: '#1565C0',
+    antipattern: '#C62828',
+    technique: '#2E7D32',
+    concept: '#6A1B9A',
+    tool: '#EF6C00',
+    trait: '#00695C'
+  };
+  typeBadge.style.background = groupColors[nodeData.group] || '#607D8B';
 
   document.getElementById('node-panel-label').textContent = nodeData.fullLabel;
 
